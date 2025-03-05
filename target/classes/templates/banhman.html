@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đài Bắc Bakery</title>
+    <link rel="stylesheet" th:href="@{/css/style-banhman.css?version=51}">
+    <script type="text/javascript" th:src="@{/js/script.js}"></script>
+    <script type="text/javascript" th:src="@{/Common/adminMode.js}"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+</head>
+<body>
+<!-- Header -->
+<header th:replace="~{fragments/header :: header}"></header>
+<!-- Banner -->
+<section class="banner">
+    <img th:src="@{/img/bgbanhman.png}" alt="cake">
+    <h2 th:text="${categoryName}"></h2>
+</section>
+
+<!-- Products Section -->
+<section class="main-container">
+    <!-- Sidebar Menu -->
+    <div class="sidebar-menu-wrapper">
+        <aside class="sidebar-menu">
+            <h3>Menu</h3>
+            <ul>
+                <li><a th:href="@{/banhman-minicake/bm}">Bánh Mặn</a></li>
+                <li><a th:href="@{/banhman-minicake/mk}">Mini Cake</a></li>
+            </ul>
+        </aside>
+    </div>
+
+    <!-- Products Section -->
+    <section class="products-section">
+        <h2 th:text="${categoryName}"></h2>
+        <div class="products-grid">
+            <div th:each="cake : ${cakelist}" class="product-card">
+                <a th:href="@{'/details/' + ${cake.id}}" class="product-card-a">
+                    <img th:src="@{'/' + ${cake.imageURL}}" alt="Image of ${cake.name}">
+                    <h3 th:text="${cake.name}"></h3>
+                    <p th:text="${cake.id}"></p>
+                    <div class="product-price-action">
+                        <div class="product-price" th:text="${cake.formattedPrice} + ' đ'"></div>
+                        <button class="add-to-cart-btn">🛒</button>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </section>
+</section>
+
+<div th:if="${totalPages > 0}" class="pagination">
+    <a th:href="@{'?page=' + ${currentPage - 1}}" class="page-btn prev" th:if="${currentPage > 1}">
+        <i class="fas fa-angle-double-left"></i>
+    </a>
+
+    <span th:each="i : ${#numbers.sequence(1, totalPages)}">
+       <a th:href="@{'?page=' + ${i}}" class="page-btn" th:classappend="${currentPage == i} ? 'active' : ''"
+          th:text="${i}"></a>
+    </span>
+
+    <a th:href="@{'?page=' + ${currentPage + 1}}"class="page-btn next" th:if="${currentPage < totalPages}">
+        <i class="fas fa-angle-double-right"></i>
+    </a>
+</div>
+
+<div th:if="${totalPages == 0}" class="no-cakes-message">
+    <h2>No cakes available in this category.</h2>
+</div>
+
+<!--Footer-->
+<footer th:replace="~{fragments/footer :: footer}"></footer>
+</body>
+</html>

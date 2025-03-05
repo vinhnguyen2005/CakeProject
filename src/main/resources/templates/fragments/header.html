@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đài Bắc Bakery</title>
+    <link rel="stylesheet" th:href="@{/css/style.css?version=51}">
+    <script type="text/javascript" th:src="@{/Common/adminMode.js}"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+</head>
+<body>
+<header th:fragment="header">
+    <div class="top-bar">
+        <div class="logo">
+            <a th:href="@{/home}">
+                <h1>Đài Bắc Bakery</h1>
+            </a>
+            <div class="search-bar">
+                <input type="text" placeholder="Tìm kiếm...">
+                <button><i class="fa fa-search"></i></button>
+            </div>
+        </div>
+        <div class="contact-info">
+            <div>
+                <i class="fa fa-phone"></i>
+                <span>098 430 96 79</span>
+            </div>
+
+            <div class="authentication">
+                <i class="fa fa-user"></i>
+
+                <span th:if="${username}" th:text="'Hi, ' + ${username}"></span>
+
+                <a th:if="${username == null}" th:href="@{/login}">
+                    <span>Tài Khoản</span>
+                </a>
+
+                <a th:if="${username}" th:href="@{/logout}" class="logout">
+                    <i class="fa fa-sign-out-alt"></i> Logout
+                </a>
+            </div>
+
+            <div>
+                <a th:href="@{/cart}" class="cart-link">
+                    <i class="fa fa-shopping-bag"></i>
+                    <span th:text="${cartItemCount}">0</span>
+                </a>
+            </div>
+        </div>
+    </div>
+    <nav>
+        <ul>
+            <li><a th:href="@{/home}">Trang Chủ</a></li>
+            <li><a th:href="@{/gateux/gt}">Bánh Sinh Nhật</a></li>
+            <li><a th:href="@{/banhman-minicake/bm}">Bánh Mặn & Mini Cake</a></li>
+            <li><a th:href="@{/loai-khac/bk}">Loại Khác</a></li>
+        </ul>
+    </nav>
+</header>
+</body>
+</html>

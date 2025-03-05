@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đài Bắc Bakery</title>
+    <link rel="stylesheet" th:href="@{/css/style.css?version=51}">
+    <script type="text/javascript" th:src="@{/Common/adminMode.js}"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+</head>
+<body>
+<!-- Header -->
+<header th:replace="~{fragments/header :: header}"></header>
+<!-- Banner -->
+<section class="banner">
+    <img th:src="@{/img/banner.png}" alt="cake">
+</section>
+
+<!-- Products Section -->
+<section class="products-section">
+    <h2>Bánh Sinh Nhật</h2>
+    <div class="products-grid">
+        <div th:each="cake : ${homepagecakes}" class="product-card">
+            <a th:href="@{'/details/' + ${cake.id}}" class="product-card-a">
+                <img th:src="@{'/' + ${cake.imageURL}}" alt="Image of ${cake.name}">
+                <h3 th:text="${cake.name}"></h3>
+                <p th:text="${cake.id}"></p>
+                <div class="product-price-action">
+                    <div class="product-price" th:text="${cake.formattedPrice} + ' đ'"></div>
+                    <button class="add-to-cart-btn">🛒</button>
+                </div>
+            </a>
+        </div>
+    </div>
+</section>
+
+<div class="see-more-btn">
+    <button><a href="gateux.html">Xem Thêm</a></button>
+</div>
+
+<div class="order-online">
+    <img th:src="@{/img/front-view-delicious-chocolate-cake_839035-107157.avif}" alt="bgimg">
+    <div class="form-overlay">
+        <form>
+            <h2>ĐẶT ONLINE NGAY!</h2>
+            <label for="name">Họ tên của bạn</label>
+            <input type="text" id="name" name="name" placeholder="Họ tên của bạn" required>
+
+            <label for="email">Địa chỉ email của bạn</label>
+            <input type="email" id="email" name="email" placeholder="Địa chỉ email của bạn" required>
+
+            <label for="phone">Số điện thoại của bạn</label>
+            <input type="tel" id="phone" name="phone" placeholder="Số điện thoại của bạn" required>
+
+            <label for="order">Nội dung</label>
+            <textarea id="order" name="order" placeholder="Nội dung" required></textarea>
+
+            <button type="submit">ĐẶT NGAY</button>
+        </form>
+    </div>
+</div>
+<script>
+    document.addEventListener("keydown", function(event) {
+        if (event.shiftKey && (event.key === "V" || event.key === "v")) {
+            alert("Admin mode activated! Not an Admin? Please contact: 0915336966.");
+            window.location.href = "/daibacbakery/admin/login";
+        }
+    });
+</script>
+
+
+<!-- Footer -->
+<footer th:replace="~{fragments/footer :: footer}"></footer>
+</body>
+</html>

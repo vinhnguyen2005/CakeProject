@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+
+    <!-- Core CSS -->
+    <link th:href="@{/Admin/assets/plugins/bootstrap/bootstrap.css}" rel="stylesheet" />
+    <link th:href="@{/Admin/assets/font-awesome/css/font-awesome.css}" rel="stylesheet" />
+    <link th:href="@{/Admin/assets/plugins/pace/pace-theme-big-counter.css}" rel="stylesheet" />
+    <link th:href="@{/Admin/assets/css/style.css}" rel="stylesheet" />
+    <link th:href="@{/Admin/assets/css/admin-profile.css}" rel="stylesheet" />
+    <link th:href="@{/Admin/assets/css/main-style.css}" rel="stylesheet" />
+    <link th:href="@{/Admin/assets/css/mystyle.css}" rel="stylesheet">
+</head>
+
+<body>
+<!-- Include Navbar and Sidebar -->
+<div th:replace="~{Admin/fragments/wrapper :: navbar}"></div>
+<div th:replace="~{Admin/fragments/wrapper :: sidebar}"></div>
+
+<!-- Main Content -->
+<div id="page-wrapper">
+    <div class="row">
+        <div class="col-lg-12">
+            <h1 class="page-header">Main Categories</h1>
+        </div>
+    </div>
+    <div class="col-lg-6">
+        <div class="panel panel-default" style="width: 77vw">
+            <div class="panel-heading">
+                Main Categories
+            </div>
+            <div class="panel-body">
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                        <tr>
+                            <th>S.NO</th>
+                            <th>Main Category Name</th>
+                            <th>Action</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td>1</td>
+                            <td>Bánh Sinh Nhật</td>
+                            <td>
+                                <a href="#" class="btn btn-primary" onclick="showSubcategoryForm(1)">Add Subcategory</a>
+                            </td>
+                            <td><a href="#" class="btn btn-success">View Details</a></td>
+                        </tr>
+                        <tr>
+                            <td>2</td>
+                            <td>Bánh Mặn & Mini Cake</td>
+                            <td>
+                                <a href="#" class="btn btn-primary" onclick="showSubcategoryForm(2)">Add Subcategory</a>
+                            </td>
+                            <td><a href="#" class="btn btn-success">View Details</a></td>
+                        </tr>
+                        <tr>
+                            <td>3</td>
+                            <td>Loại Khác</td>
+                            <td>
+                                <a href="#" class="btn btn-primary" onclick="showSubcategoryForm(3)">Add Subcategory</a>
+                            </td>
+                            <td><a href="#" class="btn btn-success">View Details</a></td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Subcategory Form (Initially Hidden) -->
+    <div class="row">
+        <div class="col-lg-12">
+            <div id="addsubcategory-form" class="panel panel-default" style="width: 1150px; margin-left: 18px; display: none">
+                <div class="panel-heading">
+                    Add Subcategory
+                </div>
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <form role="form" method="post" th:action="@{/add-subcategory}">
+                                <!-- Hidden field for Main Category ID -->
+                                <input type="hidden" id="maincategoryid" name="maincategoryid">
+
+                                <div class="form-group">
+                                    <label>Subcategory ID:</label>
+                                    <input class="form-control" name="subcategoryId" placeholder="Enter subcategory ID" required>
+                                </div>
+                                <div class="form-group">
+                                    <label>Subcategory Name</label>
+                                    <input class="form-control" name="subcategoryName" placeholder="Enter subcategory name" required>
+                                </div>
+                                <button type="submit" class="btn btn-success">Add Subcategory</button>
+                                <button type="button" class="btn btn-secondary" onclick="hideSubcategoryForm()">Cancel</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- JavaScript -->
+<script>
+    function showSubcategoryForm(categoryId) {
+        document.getElementById("maincategoryid").value = categoryId;  // Set hidden field value
+        document.getElementById("addsubcategory-form").style.display = "block"; // Show form
+    }
+
+    function hideSubcategoryForm() {
+        document.getElementById("addsubcategory-form").style.display = "none"; // Hide form
+    }
+</script>
+
+<!-- Core Scripts -->
+<script th:src="@{/Admin/assets/scripts/category.js}"></script>
+<script th:src="@{/Admin/assets/plugins/jquery-1.10.2.js}"></script>
+<script th:src="@{/Admin/assets/plugins/bootstrap/bootstrap.min.js}"></script>
+<script th:src="@{/Admin/assets/plugins/metisMenu/jquery.metisMenu.js}"></script>
+<script th:src="@{/Admin/assets/plugins/pace/pace.js}"></script>
+<script th:src="@{/Admin/assets/scripts/siminta.js}"></script>
+
+</body>
+</html>
