@@ -1,0 +1,72 @@
+/* Make the form take more space */
+.form-container {
+    width: 80vw; /* Make form width 80% of the viewport */
+    max-width: 1200px; /* Increase max-width */
+    margin: 0 auto; /* Center the form */
+    padding: 20px;
+}
+
+h1{
+    text-align: center;
+    font-size: 50px;
+    color: #2b542c;
+
+}
+
+.page-header{
+    margin-top: 100px;
+}
+
+/* Align label and input field in the same row */
+.form-group {
+    display: flex;
+    padding: 12px;
+    align-items: center; /* Align text and input vertically */
+    width: 100%; /* Ensure the full width is used */
+}
+
+/* Style labels */
+.form-group label {
+    display: inline-block;
+    width: 200px; /* Ensure label width is consistent */
+    font-weight: bold;
+    font-size: 18px;
+    line-height: 25px;
+    margin-bottom: 10px;
+}
+
+/* Style input fields */
+.form-group .form-control {
+
+    display: inline-block;
+    height: 40px;
+    padding: 20px;
+    border: 1px solid #ced4da;
+    border-radius: 5px;
+    font-size: 16px;
+    width: 900px ;
+}
+
+/* Read-only fields */
+.form-group .form-control[readonly] {
+    background-color: #e9ecef;
+    cursor: not-allowed;
+}
+
+/* Update button */
+.btn-success {
+    width: 150px;
+    padding: 12px;
+    font-size: 16px;
+    border-radius: 6px;
+    background-color: #28a745;
+    border: none;
+    color: white;
+    transition: 0.3s;
+    display: block; /* Make button take full row */
+    margin: 20px auto; /* Center the button */
+}
+
+.btn-success:hover {
+    background-color: #218838;
+}

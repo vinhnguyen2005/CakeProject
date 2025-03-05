@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+
+    <!-- Core CSS -->
+    <link th:href="@{/Admin/assets/plugins/bootstrap/bootstrap.css}" rel="stylesheet" />
+    <link th:href="@{/Admin/assets/font-awesome/css/font-awesome.css}" rel="stylesheet" />
+    <link th:href="@{/Admin/assets/plugins/pace/pace-theme-big-counter.css}" rel="stylesheet" />
+    <link th:href="@{/Admin/assets/css/style.css}" rel="stylesheet" />
+    <link th:href="@{/Admin/assets/css/main-style.css}" rel="stylesheet" />
+</head>
+<body>
+
+<!-- Navbar Fragment -->
+<div th:fragment="navbar">
+    <nav class="navbar navbar-default navbar-fixed-top" role="navigation" id="navbar">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".sidebar-collapse">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" th:href="@{/index}">
+                <img th:src="@{/Admin/assets/img/logo.png}" alt="" />
+            </a>
+        </div>
+        <!-- navbar-top-links -->
+        <ul class="nav navbar-top-links navbar-right">
+            <!-- main dropdown -->
+            <li class="dropdown">
+                <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                    <span class="top-label label label-danger">3</span><i class="fa fa-envelope fa-3x"></i>
+                </a>
+                <!-- dropdown-messages -->
+                <ul class="dropdown-menu dropdown-messages">
+                    <li>
+                        <a href="#">
+                            <div>
+                                <strong><span class=" label label-danger">Andrew Smith</span></strong>
+                                <span class="pull-right text-muted">
+                                        <em>Yesterday</em>
+                                    </span>
+                            </div>
+                            <div>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque eleifend...
+                            </div>
+                        </a>
+                    </li>
+                    <li class="divider"></li>
+                    <li>
+                        <a href="#">
+                            <div>
+                                <strong><span class=" label label-info">Jonney Depp</span></strong>
+                                <span class="pull-right text-muted">
+                                        <em>Yesterday</em>
+                                    </span>
+                            </div>
+                            <div>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque eleifend...
+                            </div>
+                        </a>
+                    </li>
+                    <li class="divider"></li>
+                    <li>
+                        <a href="#">
+                            <div>
+                                <strong><span class=" label label-success">Jonney Depp</span></strong>
+                                <span class="pull-right text-muted">
+                                        <em>Yesterday</em>
+                                    </span>
+                            </div>
+                            <div>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque eleifend...
+                            </div>
+                        </a>
+                    </li>
+                    <li class="divider"></li>
+                    <li>
+                        <a class="text-center" href="#">
+                            <strong>Read All Messages</strong>
+                            <i class="fa fa-angle-right"></i>
+                        </a>
+                    </li>
+                </ul>
+            </li>
+
+
+
+            <li class="dropdown">
+                <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                    <i class="fa fa-user fa-3x"></i>
+                </a>
+                <!-- dropdown user-->
+                <ul class="dropdown-menu dropdown-user">
+                    <li>
+                        <a th:href="@{/admin/profile}">
+                            <i class="fa fa-user fa-fw"></i> User Profile
+                        </a>
+                    </li>
+                    <li class="divider"></li>
+                    <li>
+                        <a th:href="@{/logout}">
+                            <i class="fa fa-sign-out fa-fw"></i> Logout
+                        </a>
+                    </li>
+                </ul>
+
+                <!-- end dropdown-user -->
+            </li>
+            <!-- end main dropdown -->
+        </ul>
+    </nav>
+</div>
+
+<!-- Sidebar Fragment -->
+
+    <nav class="navbar-default navbar-static-side" role="navigation" th:fragment="sidebar">
+        <div class="sidebar-collapse">
+            <ul class="nav" id="side-menu">
+                <li>
+                    <div class="user-section">
+                        <div class="user-section-inner">
+                            <img th:src="@{/Admin/assets/img/gf.png}" alt="">
+                        </div>
+                        <div class="user-info">
+                            <div>Jonny <strong>Deen</strong></div>
+                            <div class="user-text-online">
+                                <span class="user-circle-online btn btn-success btn-circle "></span>&nbsp;Online
+                            </div>
+                        </div>
+                    </div>
+                </li>
+                <li class="sidebar-search">
+                    <!-- search section-->
+                    <div class="input-group custom-search-form">
+                        <input type="text" class="form-control" placeholder="Search...">
+                        <span class="input-group-btn">
+                                <button class="btn btn-default" type="button">
+                                    <i class="fa fa-search"></i>
+                                </button>
+                            </span>
+                    </div>
+                    <!--end search section-->
+                </li>
+                <li><a th:href="@{/admin/dashboard}"><i class="fa fa-dashboard fa-fw"></i> Dashboard</a></li>
+                <li><a th:href="@{/admin/userlist}"><i class="fa fa-list-alt fa-fw"></i> Reg Users</a></li>
+                <li>
+                    <a href="#"><i class="fa fa-bar-chart-o fa-fw"></i>Category<span class="fa arrow"></span></a>
+                    <ul class="nav nav-second-level">
+                        <li><a th:href="@{/admin/category/maincategory}">Manage Cake Category</a></li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="#"><i class="fa fa-cutlery fa-fw"></i> Cake Menu <span class="fa arrow"></span></a>
+                    <ul class="nav nav-second-level">
+                        <li><a th:href="@{/cake/add}">Add Cake</a></li>
+                        <li><a th:href="@{/cake/manage}">Manage Cake</a></li>
+                    </ul>
+                </li>
+                <li><a th:href="@{/orders}"><i class="fa fa-table fa-fw"></i> Orders</a></li>
+                <li><a th:href="@{/subscribers}"><i class="fa fa-users fa-fw"></i> Online Subscriber</a></li>
+            </ul>
+        </div>
+    </nav>
+
+<script th:src="@{/Admin/assets/plugins/jquery-1.10.2.js}"></script>
+<script th:src="@{/Admin/assets/plugins/bootstrap/bootstrap.min.js}"></script>
+<script th:src="@{/Admin/assets/plugins/metisMenu/jquery.metisMenu.js}"></script>
+<script th:src="@{/Admin/assets/plugins/pace/pace.js}"></script>
+<script th:src="@{/Admin/assets/scripts/siminta.js}"></script>
+</body>
+</html>

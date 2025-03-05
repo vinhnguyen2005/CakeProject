@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đài Bắc Bakery</title>
+    <link rel="stylesheet" th:href="@{/css/detail-style.css?version=51}">
+    <script type="text/javascript" th:src="@{/Common/adminMode.js}"></script>
+    <link rel="stylesheet" th:href="@{https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css}">
+</head>
+
+<body>
+<!-- Header -->
+<header th:replace="~{fragments/header :: header}"></header>
+
+<!-- Banner -->
+<section class="banner">
+    <img th:src="@{/img/bgdetails.jpg}" alt="cake">
+    <h2 th:text="${cakedetails.name}"></h2>
+</section>
+    
+<!-- Products Section -->
+<section class="products-section">
+    <!-- Image Section -->
+    <div class="photo-side">
+        <img th:src="@{'/' + ${cakedetails.imageURL}}" alt="cakedetails image">
+    </div>
+
+    <!-- Purchase Details Section -->
+    <div class="purchase-side">
+        <div class="purchase-side-details">
+            <!-- Product Title -->
+            <div class="purchase-side-details-title">
+                <h2 th:text="${cakedetails.name}"></h2>
+                <p th:text="${cakedetails.id}"></p>
+            </div>
+            <!-- Price -->
+            <div class="price">
+                <p>Giá: <strong id="displayprice" th:text="${cakedetails.formattedPrice}  + 'đ'"></strong></p>
+            </div>
+            <!-- Sizes -->
+            <div class="size">
+                <p>Kích Thước:</p>
+                <div class="size-options">
+                    <button th:each="price, status : ${priceWithSize}"
+                            th:class="${status.index == 0} ? 'size-option active' : 'size-option'"
+                            th:value="${price.value}"
+                            th:text="${price.key}"
+                            onclick="updatePrice(this)">
+                    </button>
+                </div>
+            </div>
+
+            <!-- Quantity -->
+            <div class="quantity">
+                <p>Số lượng</p>
+                <div class="quantity-controls">
+                    <button class="decrement">−</button>
+                    <input type="text" id="quantity" value="1" readonly>
+                    <button class="increment">+</button>
+                </div>
+            </div>
+            <!-- Buttons -->
+
+            <div class="buttons">
+                <form id="cartForm" th:action="@{/cart/process-cart}" method="post">
+                    <input type="hidden" name="id" th:value="${cakedetails.id}">
+                    <input type="hidden" name="name" th:value="${cakedetails.name}">
+                    <input type="hidden" name="imageURL" th:value="${cakedetails.imageURL}">
+                    <input type="hidden" name="size" id="sizeInput">
+                    <input type="hidden" name="quantity" id="quantityInput" value="1">
+                    <input type="hidden" name="price" id="priceInput" th:value="${cakedetails.price != null ? cakedetails.price : '0'}">
+
+
+                    <input type="hidden" name="redirectToCart" value="false">
+                    <button type="submit" class="add-to-cart">Thêm vào giỏ hàng</button>
+                </form>
+
+                <form id="buyNowForm"  th:action="@{/cart/process-cart}" method="post">
+
+                    <input type="hidden" name="id" th:value="${cakedetails.id}">
+                    <input type="hidden" name="name" th:value="${cakedetails.name}">
+                    <input type="hidden" name="imageURL" th:value="${cakedetails.imageURL}">
+                    <input type="hidden" name="size" id="sizeInput2">
+                    <input type="hidden" name="quantity" id="quantityInput2" value="1">
+                    <input type="hidden" name="price" id="priceInput2" th:value="${cakedetails.price != null ? cakedetails.price : '0'}">
+
+                    <input type="hidden" name="redirectToCart" value="true">
+                    <button type="submit" class="buy-now">Mua ngay</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- Footer -->
+<footer th:replace="~{fragments/footer :: footer}"></footer>
+<script th:src="@{/js/script.js}"></script>
+</body>
+</html>

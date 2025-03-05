@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đài Bắc Bakery</title>
+    <link rel="stylesheet" th:href="@{/css/style-register.css?version=51}">
+    <script type="text/javascript" th:src="@{/Common/adminMode.js}"></script>
+    <script type="text/javascript" th:src="@{/js/script.js}"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+</head>
+<body>
+<!-- Header -->
+<header th:replace="~{fragments/header :: header}"></header>
+
+
+<!-- Banner -->
+<section class="banner">
+    <img th:src="@{/img/background-gateux2.jpg}" alt="cake">
+    <h2>Đăng Ký</h2>
+</section>
+
+<!-- Login Section -->
+<section class="register-container">
+    <div class="register-box">
+        <h2>Đăng Ký</h2>
+        <div th:if="${failedMessage}" class="error" style="color: red;">
+            <p th:text="${failedMessage}"></p>
+        </div>
+
+
+        <form th:action="@{/register}" th:object="${user}" method="post">
+            <div class="input-group">
+                <label for="firstName">Họ</label>
+                <input type="text" id="firstName" name="firstName" th:field="*{firstName}" required>
+            </div>
+            <div class="input-group">
+                <label for="lastName">Tên</label>
+                <input type="text" id="lastName" name="lastName" th:field="*{lastName}" required>
+            </div>
+            <div class="input-group">
+                <label for="email">Email</label>
+                <input type="email" id="email" name="email" th:field="*{email}" required>
+            </div>
+            <div class="input-group">
+                <label for="username">Tên đăng nhập</label>
+                <input type="text" id="username" name="username" th:field="*{username}" required>
+            </div>
+            <div class="input-group">
+                <label for="phoneNumber">Số điện thoại</label>
+                <input type="text" id="phoneNumber" name="phoneNumber" th:field="*{phoneNumber}" required>
+            </div>
+            <div class="input-group">
+                <label for="password">Mật khẩu</label>
+                <input type="password" id="password" name="password" th:field="*{password}" required>
+            </div>
+            <div class="input-group">
+                <button type="submit" class="register-btn">Đăng Ký</button>
+            </div>
+        </form>
+
+        <p style="text-align: center">Đã có tài khoản? <a th:href="@{/login}">Đăng nhập ngay</a></p>
+    </div>
+</section>
+
+<!--Footer-->
+<footer th:replace="~{fragments/footer :: footer}"></footer>
+</body>
+</html>
