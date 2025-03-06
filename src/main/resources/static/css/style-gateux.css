@@ -32,6 +32,18 @@ header .top-bar .logo a {
     color: rgb(236, 214, 174);
 }
 
+header .cart-link{
+    display: flex;
+    flex-direction: row;
+}
+
+header .itemCount{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+
 header .top-bar h1 {
     margin-right: 20px;
     width: 239px;

@@ -25,7 +25,9 @@
         <aside class="sidebar-menu">
             <h3>Menu</h3>
             <ul>
-                <li><a th:href="@{/loai-khac/bk}">Loại Khác</a></li>
+                <li th:each="subcat : ${subcategories}">
+                    <a th:href="@{'/loai-khac/' + ${subcat.id}}" th:text="${subcat.name}"></a>
+                </li>
             </ul>
         </aside>
     </div>

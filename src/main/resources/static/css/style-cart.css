@@ -37,6 +37,17 @@ header .top-bar h1 {
     width: 239px;
 }
 
+header .cart-link{
+    display: flex;
+    flex-direction: row;
+}
+
+header .itemCount{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
 header .logo {
     display: flex;
     align-items: center;

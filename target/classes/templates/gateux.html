@@ -28,14 +28,9 @@
         <aside class="sidebar-menu">
             <h3>Menu</h3>
             <ul>
-                <li><a th:href="@{/gateux/gt}">Gateaux Kem Tươi</a></li>
-                <li><a th:href="@{/gateux/ms}">Bánh Mousse</a></li>
-                <li><a th:href="@{/gateux/bpk}">Bánh Phụ Kiện</a></li>
-                <li><a th:href="@{/gateux/vlt}">Bánh Valentine - Trái Tim</a></li>
-                <li><a th:href="@{/gateux/bbtg}">Bánh Sinh Nhật Bé Trai - Bé Gái</a></li>
-                <li><a th:href="@{/gateux/bia}">Bánh In Ảnh</a></li>
-                <li><a th:href="@{/gateux/bv}">Bánh Vẽ</a></li>
-                <li><a th:href="@{/gateux/bsk}">Bánh Sự Kiện</a></li>
+                <li th:each="subcat : ${subcategories}">
+                    <a th:href="@{'/gateux/' + ${subcat.id}}" th:text="${subcat.name}"></a>
+                </li>
             </ul>
         </aside>
     </div>

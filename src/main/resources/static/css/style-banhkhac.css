@@ -49,6 +49,17 @@ header .search-bar {
     gap: 7px;
 }
 
+header .cart-link{
+    display: flex;
+    flex-direction: row;
+}
+
+header .itemCount{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
 header .search-bar input {
     padding: 8px;
     font-size: 14px;

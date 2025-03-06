@@ -1,35 +1,38 @@
 package com.example.cakeprj.Controller;
 
+import com.example.cakeprj.Entity.Category;
+import com.example.cakeprj.Entity.MainCategory;
 import com.example.cakeprj.Entity.Users;
 import com.example.cakeprj.Repository.UserRepository;
 import com.example.cakeprj.Security.CustomUserDetails;
+import com.example.cakeprj.Service.CategoryService;
+import com.example.cakeprj.Service.MainCategoryService;
 import com.example.cakeprj.Service.UserService;
-import org.apache.coyote.Request;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.example.cakeprj.dto.request.SubCategoryCreationRequest;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Optional;
+
 
 @Controller
 @RequestMapping("admin")
 public class AdminPageController {
-    @Autowired
     private final UserRepository userRepository;
-    @Autowired
     private final UserService userService;
+    private final CategoryService categoryService;
+    private final MainCategoryService mainCategoryService;
 
-    public AdminPageController(UserRepository userRepository, UserService userService) {
+    public AdminPageController(UserRepository userRepository, UserService userService, CategoryService categoryService, MainCategoryService mainCategoryService) {
         this.userRepository = userRepository;
         this.userService = userService;
+        this.categoryService = categoryService;
+        this.mainCategoryService = mainCategoryService;
     }
 
     @GetMapping("/dashboard")
@@ -56,7 +59,7 @@ public class AdminPageController {
             Model model,
             RedirectAttributes redirectAttributes) {
         Users user = userDetails.getUser();
-        System.out.println("Update profile request received: firstName=" + firstName + ", lastName=" + lastName);
+
         try {
             user.setFirstName(firstName);
             user.setLastName(lastName);
@@ -88,5 +91,97 @@ public class AdminPageController {
     public String mainCategory(Model model) {
         return "Admin/maincategory";
     }
+
+
+    @PostMapping("/category/add-subcategory")
+    public String addSubCategory(@RequestParam String maincategoryid,
+                                 @RequestParam String subcategoryId,
+                                 @RequestParam String subcategoryName,
+                                 Model model) {
+
+
+        boolean isAdded = categoryService.addSubCategory(maincategoryid, subcategoryId, subcategoryName);
+
+        if (isAdded) {
+            System.out.println("Subcategory added successfully.");
+            model.addAttribute("message", "Subcategory added successfully!");
+            model.addAttribute("addSuccessful", true);
+        } else {
+            System.out.println("Error: Subcategory ID already exists.");
+            model.addAttribute("error", "Subcategory ID already exists!");
+        }
+
+        return "Admin/maincategory";
+    }
+
+    @GetMapping("/category/subcategory-list")
+    public String subCategoryList(@RequestParam("id") String mainCategoryId, Model model) {
+        List<SubCategoryCreationRequest> subCategoriesList = categoryService.getSubCategories(mainCategoryId);
+        String mainCategoryName = mainCategoryService.getMainCategoryName(mainCategoryId)
+                .map(MainCategory::getName)
+                .orElse("Unknown Category");
+        model.addAttribute("subcategories", subCategoriesList);
+        model.addAttribute("mainCategoryName", mainCategoryName);
+        model.addAttribute("mainCategoryId", mainCategoryId);
+        return "Admin/subcategory-table";
+    }
+
+    @GetMapping("/categories/delete/{id}")
+    public String deleteCategory(@PathVariable String id,
+                                 @RequestParam("mainCategoryId") String mainCategoryId,
+                                 RedirectAttributes redirectAttributes) {
+        categoryService.deleteSubcategory(id);
+        redirectAttributes.addFlashAttribute("successMessage", "Category deleted successfully!");
+        return "redirect:/admin/category/subcategory-list?id=" + mainCategoryId;
+    }
+
+    @GetMapping("/category/edit/{categoryId}")
+    public String editCategory(@PathVariable String categoryId,
+                               @ModelAttribute("successMessage") String successMessage,
+                               @ModelAttribute("errorMessage") String errorMessage,
+                               Model model) {
+        try {
+            Category category = categoryService.getSubCategoryByID(categoryId);
+            List<MainCategory> mainCategories = mainCategoryService.getAllMainCategory();
+
+            int cakeCount = categoryService.getCakeCount(categoryId);
+
+            model.addAttribute("category", category);
+            model.addAttribute("mainCategories", mainCategories);
+            model.addAttribute("selectedMainCategoryId", category.getMainCategory().getId());
+            model.addAttribute("cakeCount", cakeCount);
+
+            model.addAttribute("successMessage", successMessage);
+            model.addAttribute("errorMessage", errorMessage);
+
+
+
+            return "Admin/update-category";
+        } catch (Exception e) {
+            model.addAttribute("errorMessage", "Category not found: " + e.getMessage());
+            return "redirect:/admin/category/maincategory";
+        }
+    }
+
+
+    @PostMapping("/category/update-category")
+    public String updateCategory(@RequestParam String categoryID,
+                                 @RequestParam String categoryName,
+                                 @RequestParam String mainCategory,
+                                 RedirectAttributes redirectAttributes) {
+        try {
+            if(categoryID != null){
+                categoryService.updateSubCategory(categoryID, categoryName, mainCategory);
+                redirectAttributes.addFlashAttribute("successMessage", "Category updated successfully!");
+            }
+
+            return "redirect:/admin/category/edit/" + categoryID;
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Failed to update category: " + e.getMessage());
+            return "redirect:/admin/category/edit/" + categoryID;
+        }
+    }
+
+
 
 }

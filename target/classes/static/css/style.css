@@ -145,6 +145,16 @@ header .logout i {
     margin-right: 5px;
 }
 
+header .cart-link{
+    display: flex;
+}
+
+header .itemCount{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
 header nav {
     width: 100%;
     max-width: 1200px;

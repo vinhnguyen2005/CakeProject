@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+
+    <!-- Core CSS -->
+    <link th:href="@{/Admin/assets/plugins/bootstrap/bootstrap.css}" rel="stylesheet" />
+    <link th:href="@{/Admin/assets/font-awesome/css/font-awesome.css}" rel="stylesheet" />
+    <link th:href="@{/Admin/assets/plugins/pace/pace-theme-big-counter.css}" rel="stylesheet" />
+    <link th:href="@{/Admin/assets/css/style.css}" rel="stylesheet" />
+    <link th:href="@{/Admin/assets/css/admin-profile.css}" rel="stylesheet" />
+    <link th:href="@{/Admin/assets/css/main-style.css}" rel="stylesheet" />
+    <link th:href="@{/Admin/assets/css/mystyle.css}" rel="stylesheet" />
+</head>
+
+<body>
+<!-- Include Navbar and Sidebar -->
+<div th:replace="~{Admin/fragments/wrapper :: navbar}"></div>
+<div th:replace="~{Admin/fragments/wrapper :: sidebar}"></div>
+
+<!-- Main Content -->
+<div id="page-wrapper">
+    <div class="row">
+        <div class="col-lg-12">
+            <h1 class="page-header">Admin Profile</h1>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-6">
+            <form th:action="@{/admin/category/update-category}" method="post" class="form-container" style="background-color: white; width: 1160px; border-radius: 10px">
+                <div class="form-group">
+                    <label for="mainCategory">Main Category:</label>
+                    <select id="mainCategory" name="mainCategory" class="my-form-control">
+                        <option>Select Main Category</option>
+                        <option th:each="mc : ${mainCategories}"
+                                th:value="${mc.id}"
+                                th:text="${mc.name}"
+                                th:selected="${mc.id == selectedMainCategoryId}">
+                        </option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="categoryID">Category ID:</label>
+                    <input type="text" id="categoryID" name="categoryID" class="form-control" th:value="${category.id}" required readonly>
+                </div>
+
+                <div class="form-group">
+                    <label for="categoryName">Category Name:</label>
+                    <input type="text" id="categoryName" name="categoryName" class="form-control" th:value="${category.name}" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="noOfCake">Number of Cake:</label>
+                    <input type="text" id="noOfCake" name="noOfCake" class="form-control" th:value="${cakeCount}" required readonly>
+                </div>
+
+                <button type="submit" class="btn btn-success">Update</button>
+            </form>
+            <div th:if="${successMessage != null and successMessage != ''}" class="alert alert-success">
+                <p th:text="${successMessage}"></p>
+            </div>
+            <div th:if="${errorMessage != null and errorMessage != ''}" class="alert alert-danger">
+                <p th:text="${errorMessage}"></p>
+            </div>
+            <a th:href="@{/admin/category/subcategory-list(id=${selectedMainCategoryId})}" class="btn btn-secondary btn-sm">Back</a>
+        </div>
+    </div>
+</div>
+
+<!-- Core Scripts -->
+<script th:src="@{/Admin/assets/plugins/jquery-1.10.2.js}"></script>
+<script th:src="@{/Admin/assets/plugins/bootstrap/bootstrap.min.js}"></script>
+<script th:src="@{/Admin/assets/plugins/metisMenu/jquery.metisMenu.js}"></script>
+<script th:src="@{/Admin/assets/plugins/pace/pace.js}"></script>
+<script th:src="@{/Admin/assets/scripts/siminta.js}"></script>
+
+</body>
+</html>

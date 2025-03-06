@@ -25,8 +25,9 @@
         <aside class="sidebar-menu">
             <h3>Menu</h3>
             <ul>
-                <li><a th:href="@{/banhman-minicake/bm}">Bánh Mặn</a></li>
-                <li><a th:href="@{/banhman-minicake/mk}">Mini Cake</a></li>
+                <li th:each="subcat : ${subcategories}">
+                    <a th:href="@{'/banhman-minicake/' + ${subcat.id}}" th:text="${subcat.name}"></a>
+                </li>
             </ul>
         </aside>
     </div>

@@ -43,6 +43,17 @@ header .logo {
     gap: 5px;
 }
 
+header .cart-link{
+    display: flex;
+    flex-direction: row;
+}
+
+header .itemCount{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
 header .search-bar {
     display: flex;
     align-items: center;

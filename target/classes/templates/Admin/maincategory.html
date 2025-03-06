@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -13,7 +12,7 @@
     <link th:href="@{/Admin/assets/css/style.css}" rel="stylesheet" />
     <link th:href="@{/Admin/assets/css/admin-profile.css}" rel="stylesheet" />
     <link th:href="@{/Admin/assets/css/main-style.css}" rel="stylesheet" />
-    <link th:ref="@{/Admin/assets/css/mystyle.css}" rel="stylesheet">
+    <link th:href="@{/Admin/assets/css/mystyle.css}" rel="stylesheet">
 </head>
 
 <body>
@@ -28,7 +27,7 @@
             <h1 class="page-header">Main Categories</h1>
         </div>
     </div>
-    <div class="col-lg-6">
+    <div class="col-lg-12">
         <div class="panel panel-default" style="width: 77vw">
             <div class="panel-heading">
                 Main Categories
@@ -39,7 +38,7 @@
                         <thead>
                         <tr>
                             <th>S.NO</th>
-                            <th>Main Category Name</th>
+                            <th style="width: 500px">Main Category Name</th>
                             <th>Action</th>
                         </tr>
                         </thead>
@@ -47,17 +46,26 @@
                         <tr>
                             <td>1</td>
                             <td>Bánh Sinh Nhật</td>
-                            <td><a href="#" class="btn btn-primary">Add Subcategory</a></td>
+                            <td>
+                                <a class="btn btn-primary" onclick="showSubcategoryForm(1)">Add Subcategory</a>
+                                <a th:href="@{/admin/category/subcategory-list(id=1)}" class="btn btn-primary" style="background-color: #2b542c">View Details</a>
+                            </td>
                         </tr>
                         <tr>
                             <td>2</td>
                             <td>Bánh Mặn & Mini Cake</td>
-                            <td><a href="#" class="btn btn-primary">Add Subcategory</a></td>
+                            <td>
+                                <a class="btn btn-primary" onclick="showSubcategoryForm(2)">Add Subcategory</a>
+                                <a th:href="@{/admin/category/subcategory-list(id=2)}" class="btn btn-primary" style="background-color: #2b542c">View Details</a>
+                            </td>
                         </tr>
                         <tr>
                             <td>3</td>
                             <td>Loại Khác</td>
-                            <td><a href="#" class="btn btn-primary">Add Subcategory</a></td>
+                            <td>
+                                <a class="btn btn-primary" onclick="showSubcategoryForm(3)">Add Subcategory</a>
+                                <a th:href="@{/admin/category/subcategory-list(id=3)}" class="btn btn-primary" style="background-color: #2b542c">View Details</a>
+                            </td>
                         </tr>
                         </tbody>
                     </table>
@@ -65,9 +73,10 @@
             </div>
         </div>
     </div>
+
+    <!-- Subcategory Form (Initially Hidden) -->
     <div class="row">
         <div class="col-lg-12">
-            <!-- Form Elements -->
             <div id="addsubcategory-form" class="panel panel-default" style="width: 1150px; margin-left: 18px; display: none">
                 <div class="panel-heading">
                     Add Subcategory
@@ -75,24 +84,43 @@
                 <div class="panel-body">
                     <div class="row">
                         <div class="col-lg-12">
-                            <form role="form" method="post" >
+                            <form method="post" th:action="@{/admin/category/add-subcategory}">
+                                <input type="hidden" id="maincategoryid" name="maincategoryid">
+
                                 <div class="form-group">
                                     <label>Subcategory ID:</label>
-                                    <input class="form-control" placeholder="Enter subcategory ID">
+                                    <input class="form-control" name="subcategoryId" placeholder="Enter subcategory ID" required>
                                 </div>
                                 <div class="form-group">
                                     <label>Subcategory Name</label>
-                                    <input class="form-control" placeholder="Enter subcategory name">
+                                    <input class="form-control" name="subcategoryName" placeholder="Enter subcategory name" required>
                                 </div>
+                                <button type="submit" class="btn btn-success">Add Subcategory</button>
+                                <button type="button" class="btn btn-secondary" onclick="hideSubcategoryForm()">Cancel</button>
                             </form>
                         </div>
                     </div>
                 </div>
             </div>
-            <!-- End Form Elements -->
+        </div>
+    </div>
+
+    <div id="successOverlay" class="overlay" th:if="${addSuccessful}">
+        <div class="overlay-content">
+            <p id="successMessage" th:text="${message}"></p>
+            <button class="btn btn-primary" onclick="viewTable()">View Table</button>
+            <button class="btn btn-secondary" onclick="closeSuccessOverlay()">Stay Here</button>
+        </div>
+    </div>
+    <div id="failOverlay" class="overlay" th:if="${error}">
+        <div class="overlay-content">
+            <p th:text="${error}" class="alert alert-danger"></p>
+            <button class="btn btn-primary" onclick="viewTable()">View Table</button>
+            <button class="btn btn-secondary" onclick="closeFailOverlay()">Stay Here</button>
         </div>
     </div>
 </div>
+
 
 <!-- Core Scripts -->
 <script th:src="@{/Admin/assets/scripts/category.js}"></script>
@@ -101,5 +129,6 @@
 <script th:src="@{/Admin/assets/plugins/metisMenu/jquery.metisMenu.js}"></script>
 <script th:src="@{/Admin/assets/plugins/pace/pace.js}"></script>
 <script th:src="@{/Admin/assets/scripts/siminta.js}"></script>
+
 </body>
 </html>
