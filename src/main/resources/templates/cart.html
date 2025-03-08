@@ -33,7 +33,7 @@
         <tbody>
         <tr th:each="cartItem : ${cartItems}">
             <td class="product-info">
-                <img th:src="@{'/' + ${cartItem.imageURL}}" alt="Cake Image">
+                <img th:src="@{'/uploads/' + ${cartItem.imageURL}}" alt="Cake Image">
                 <div class="product-details">
                     <p class="product-name" th:text="${cartItem.name}"></p>
                     <p class="product-size" th:text="${cartItem.size}"></p>

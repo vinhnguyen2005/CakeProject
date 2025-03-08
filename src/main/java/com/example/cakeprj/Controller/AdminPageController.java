@@ -1,23 +1,31 @@
 package com.example.cakeprj.Controller;
 
+import com.example.cakeprj.Entity.Cake;
 import com.example.cakeprj.Entity.Category;
 import com.example.cakeprj.Entity.MainCategory;
 import com.example.cakeprj.Entity.Users;
+import com.example.cakeprj.Repository.CakeProductRepository;
 import com.example.cakeprj.Repository.UserRepository;
 import com.example.cakeprj.Security.CustomUserDetails;
-import com.example.cakeprj.Service.CategoryService;
-import com.example.cakeprj.Service.MainCategoryService;
-import com.example.cakeprj.Service.UserService;
+import com.example.cakeprj.Service.*;
 import com.example.cakeprj.dto.request.SubCategoryCreationRequest;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
+import java.util.HashSet;
 import java.util.List;
-import java.util.Optional;
+import java.util.Set;
+import java.util.UUID;
 
 
 @Controller
@@ -27,12 +35,18 @@ public class AdminPageController {
     private final UserService userService;
     private final CategoryService categoryService;
     private final MainCategoryService mainCategoryService;
+    private final CartService cartService;
+    private final CakeService cakeService;
+    private final CakeProductRepository cakeProductRepository;
 
-    public AdminPageController(UserRepository userRepository, UserService userService, CategoryService categoryService, MainCategoryService mainCategoryService) {
+    public AdminPageController(UserRepository userRepository, UserService userService, CategoryService categoryService, MainCategoryService mainCategoryService, CartService cartService, CakeService cakeService, CakeProductRepository cakeProductRepository) {
         this.userRepository = userRepository;
         this.userService = userService;
         this.categoryService = categoryService;
         this.mainCategoryService = mainCategoryService;
+        this.cartService = cartService;
+        this.cakeService = cakeService;
+        this.cakeProductRepository = cakeProductRepository;
     }
 
     @GetMapping("/dashboard")
@@ -180,6 +194,57 @@ public class AdminPageController {
             redirectAttributes.addFlashAttribute("errorMessage", "Failed to update category: " + e.getMessage());
             return "redirect:/admin/category/edit/" + categoryID;
         }
+    }
+
+    @GetMapping("/cake/add")
+    public String showAddCakeForm(Model model) {
+        List<Category> categories = categoryService.getAllCategories();
+        model.addAttribute("categories", categories);
+        return "Admin/add-cake";
+    }
+
+
+    @PostMapping("/cake/add")
+    public String addCake(
+            @RequestParam("categoryIds") List<String> categoryIds,
+            @RequestParam("categoryId") String categoryId,
+            @RequestParam("cakeNumber") String cakeNumber,
+            @RequestParam("cakeName") String cakeName,
+            @RequestParam("cakeImage") MultipartFile file,
+            @RequestParam(value = "withSize", defaultValue = "false") boolean withSize,
+            @RequestParam("cakePrice") double cakePrice,
+            Model model) throws IOException {
+
+        Cake newcake = new Cake();
+
+        if (!file.isEmpty()) {
+            String fileName = UUID.randomUUID().toString() + "_" + file.getOriginalFilename();
+            Path uploadPath = Paths.get("uploads/");
+
+            if (!Files.exists(uploadPath)) {
+                Files.createDirectories(uploadPath);
+            }
+
+            Path filePath = uploadPath.resolve(fileName);
+            Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
+            newcake.setImageURL(fileName);
+        }
+
+        Set<Category> selectedCategories = new HashSet<>(categoryService.findAllByID(categoryIds));
+        String cakeId = categoryId + cakeNumber;
+        if (cakeService.existById(cakeId)){
+            model.addAttribute("errorMessage", "Cake already exists!");
+            return "Admin/add-cake";
+        }
+
+        newcake.setId(cakeId);
+        newcake.setName(cakeName);
+        newcake.setHasSize(withSize);
+        newcake.setPrice(cakePrice);
+        newcake.setCategories(selectedCategories);
+        cakeProductRepository.save(newcake);
+
+        return "Admin/add-cake";
     }
 
 

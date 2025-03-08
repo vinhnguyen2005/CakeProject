@@ -33,5 +33,6 @@ public class CakeService {
 
     public List<Cake> getAllCakes() { return repository.findAll(); }
 
+    public boolean existById(String id) { return repository.existsById(id); }
 
 }

@@ -57,7 +57,9 @@ public class CategoryService {
         return categoryRepository.findById(subCategoryID).orElseThrow(() -> new RuntimeException("SubCategory not found"));
     }
 
-
+    public List<Category> findAllByID(List<String> ids){
+        return categoryRepository.findAllById(ids);
+    }
 
     public List<SubCategoryCreationRequest> getSubCategories(String mainCategoryID) {
         List<Category> subcategoriesList = categoryRepository.findCategoriesByMainCategoryId(mainCategoryID);
@@ -83,5 +85,9 @@ public class CategoryService {
 
     public void deleteSubcategory(String subCategoryID) {
         categoryRepository.deleteById(subCategoryID);
+    }
+
+    public List<Category> getAllCategories() {
+        return categoryRepository.findAll();
     }
 }

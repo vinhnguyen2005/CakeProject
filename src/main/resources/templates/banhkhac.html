@@ -39,7 +39,7 @@
         <div class="products-grid">
             <div th:each="cake : ${cakelist}" class="product-card">
                 <a th:href="@{'/details/' + ${cake.id}}" class="product-card-a">
-                    <img th:src="@{'/' + ${cake.imageURL}}" alt="Image of ${cake.name}">
+                    <img th:src="@{'/uploads/' + ${cake.imageURL}}" alt="Cake Image">
                     <h3 th:text="${cake.name}"></h3>
                     <p th:text="${cake.id}"></p>
                     <div class="product-price-action">

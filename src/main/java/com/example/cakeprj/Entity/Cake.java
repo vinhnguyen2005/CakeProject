@@ -1,7 +1,6 @@
 package com.example.cakeprj.Entity;
 
 import jakarta.persistence.*;
-
 import java.util.Set;
 
 @Entity
@@ -13,6 +12,7 @@ public class Cake {
     private String name;
     private Double price;
     private String imageURL;
+    private Boolean hasSize;
 
     @ManyToMany
     @JoinTable(
@@ -57,12 +57,27 @@ public class Cake {
         this.price = price;
     }
 
-
     public String getImageURL() {
         return imageURL;
     }
 
     public void setImageURL(String imageURL) {
         this.imageURL = imageURL;
+    }
+
+    public Boolean getHasSize() {
+        return hasSize;
+    }
+
+    public void setHasSize(Boolean hasSize) {
+        this.hasSize = hasSize;
+    }
+
+    public Set<Category> getCategories() {
+        return categories;
+    }
+
+    public void setCategories(Set<Category> categories) {
+        this.categories = categories;
     }
 }
