@@ -62,12 +62,32 @@ CakeWebsiteManagement/
    cd CakeWebsiteManagement
    ```
 2. **Configure Database:**
-   Update `application.properties` with your MySQL credentials:
-   ```properties
-   spring.datasource.url=jdbc:mysql://localhost:3306/cake_db
-   spring.datasource.username=root
-   spring.datasource.password=yourpassword
-   ```
+
+```properties
+server:
+  port: 8080
+  servlet:
+    context-path: /daibacbakery
+
+spring:
+  datasource:
+    url: "jdbc:mysql://localhost:3306/cake_db"  # Changed database name to cake_db
+    username: root
+    password: yourpassword  # Replace 'yourpassword' with the actual password
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+  thymeleaf:
+    prefix: classpath:/templates/
+    suffix: .html
+    mode: HTML
+    cache: false
+    logging-level: TRACE
+```
 3. **Build and Run the Application:**
    ```sh
    mvn spring-boot:run
