@@ -29,7 +29,7 @@ public class UserSecurityConfig {
         http
                 .securityMatcher("/**")
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/login", "/home", "/register", "/details/**", "/css/**", "/js/**", "/uploads/**", "/Common/**", "/Admin/assets/**").permitAll()
+                        .requestMatchers("/login", "/home", "/register", "/details/**", "/css/**", "/js/**", "/uploads/**", "/Common/**", "/img/**", "/Admin/assets/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form

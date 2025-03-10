@@ -33,3 +33,24 @@ document.addEventListener("DOMContentLoaded", function () {
 
     categorySelect.addEventListener("change", updatePrefixOptions);
 });
+
+document.addEventListener("DOMContentLoaded", function () {
+    const filterDropdown = document.getElementById("categoryFilter");
+    const table = $('#dataTables-example').DataTable();
+
+    filterDropdown.addEventListener("change", function () {
+        const selectedCategory = this.value;
+
+        if (selectedCategory === "") {
+            table.search("").columns().search("").draw();
+        } else {
+            table.column(2).search(selectedCategory, false, true).draw();
+        }
+    });
+});
+
+
+function viewAddTable(){
+    window.location.href = "/daibacbakery/admin/cake/manage";
+}
+

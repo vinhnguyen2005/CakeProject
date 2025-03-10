@@ -9,6 +9,7 @@ import com.example.cakeprj.Repository.UserRepository;
 import com.example.cakeprj.Security.CustomUserDetails;
 import com.example.cakeprj.Service.*;
 import com.example.cakeprj.dto.request.SubCategoryCreationRequest;
+import com.example.cakeprj.util.PriceFormatter;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
@@ -197,25 +198,45 @@ public class AdminPageController {
     }
 
     @GetMapping("/cake/add")
-    public String showAddCakeForm(Model model) {
+    public String showAddCakeForm(@RequestParam(value = "successMessage", required = false) String successMessage,
+                                  @RequestParam(value = "errorMessage", required = false) String errorMessage,
+                                  Model model) {
         List<Category> categories = categoryService.getAllCategories();
         model.addAttribute("categories", categories);
+
+        if (successMessage != null) model.addAttribute("successMessage", successMessage);
+        if (errorMessage != null) model.addAttribute("errorMessage", errorMessage);
+
         return "Admin/add-cake";
     }
 
-
     @PostMapping("/cake/add")
     public String addCake(
-            @RequestParam("categoryIds") List<String> categoryIds,
+            @RequestParam(value = "categoryIds") List<String> categoryIds,
             @RequestParam("categoryId") String categoryId,
             @RequestParam("cakeNumber") String cakeNumber,
             @RequestParam("cakeName") String cakeName,
             @RequestParam("cakeImage") MultipartFile file,
             @RequestParam(value = "withSize", defaultValue = "false") boolean withSize,
             @RequestParam("cakePrice") double cakePrice,
-            Model model) throws IOException {
+            RedirectAttributes redirectAttributes) throws IOException {
 
-        Cake newcake = new Cake();
+        if (categoryId == null || categoryId.isEmpty() || cakeNumber == null || cakeNumber.isEmpty()) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Category and Cake Number are required!");
+            return "redirect:/admin/cake/add";
+        }
+
+        String cakeId = categoryId.toUpperCase() + cakeNumber;
+        if (cakeService.existById(cakeId)) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Cake already exists!");
+            return "redirect:/admin/cake/add";
+        }
+
+        Cake newCake = new Cake();
+        newCake.setId(cakeId);
+        newCake.setName(cakeName);
+        newCake.setHasSize(withSize);
+        newCake.setPrice(cakePrice);
 
         if (!file.isEmpty()) {
             String fileName = UUID.randomUUID().toString() + "_" + file.getOriginalFilename();
@@ -227,26 +248,97 @@ public class AdminPageController {
 
             Path filePath = uploadPath.resolve(fileName);
             Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
-            newcake.setImageURL(fileName);
+            newCake.setImageURL(fileName);
         }
 
-        Set<Category> selectedCategories = new HashSet<>(categoryService.findAllByID(categoryIds));
-        String cakeId = categoryId + cakeNumber;
-        if (cakeService.existById(cakeId)){
-            model.addAttribute("errorMessage", "Cake already exists!");
-            return "Admin/add-cake";
+        if (categoryIds != null) {
+            Set<Category> selectedCategories = new HashSet<>(categoryService.findAllByID(categoryIds));
+            newCake.setCategories(selectedCategories);
         }
 
-        newcake.setId(cakeId);
-        newcake.setName(cakeName);
-        newcake.setHasSize(withSize);
-        newcake.setPrice(cakePrice);
-        newcake.setCategories(selectedCategories);
-        cakeProductRepository.save(newcake);
+        cakeProductRepository.save(newCake);
 
-        return "Admin/add-cake";
+        redirectAttributes.addFlashAttribute("successMessage", "Cake added successfully!");
+        return "redirect:/admin/cake/add";
     }
 
+    @GetMapping("/cake/manage")
+    public String showManageCakeTable(@ModelAttribute("deleteSuccessful") String deleteSuccessful, @ModelAttribute("errorMessage") String errorMessage ,Model model) {
+        List<Category> categories = categoryService.getAllCategories();
+        List<Cake> cakes = cakeService.getAllCakes();
+        model.addAttribute("cakes", cakes);
+        for (Cake cake : cakes) {
+            cake.setFormattedPrice(PriceFormatter.formatPrice(cake.getPrice()));
+        }
+        model.addAttribute("deleteSuccessful", deleteSuccessful);
+        model.addAttribute("errorMessage", errorMessage);
+        model.addAttribute("categories", categories);
+        return "Admin/cake-table";
+    }
+
+    @GetMapping("/cake/delete/{id}")
+    public String deleteCake(@PathVariable String id, RedirectAttributes redirectAttributes) {
+        cakeService.deleteById(id);
+        redirectAttributes.addFlashAttribute("deleteSuccessful", "Cake deleted successfully!");
+        return "redirect:/admin/cake/manage";
+    }
+
+    @GetMapping("/cake/update/{id}")
+    public String updateCake(@PathVariable String id, Model model,
+                             @ModelAttribute("errorMessage") String errorMessage,
+                             @ModelAttribute("successMessage") String successMessage,
+                             RedirectAttributes redirectAttributes) {
+        Cake foundCake = cakeService.getCakeById(id);
+
+        if (foundCake == null) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Cake not found!");
+            return "redirect:/admin/cake/manage";
+        }
+
+        model.addAttribute("cake", foundCake);
+        model.addAttribute("errorMessage", errorMessage);
+        model.addAttribute("successMessage", successMessage);
+        return "Admin/update-cake";
+    }
+
+    @PostMapping("/cake/update/{id}")
+    public String updateCake(@PathVariable String id,
+                             @RequestParam("cakeName") String name,
+                             @RequestParam("cakePrice") Double price,
+                             @RequestParam(value = "cakeImage", required = false) MultipartFile imageFile,
+                             @RequestParam("withSize") Boolean hasSize,
+                             RedirectAttributes redirectAttributes) {
+        try {
+            Cake foundCake = cakeService.getCakeById(id);
+            foundCake.setName(name);
+            foundCake.setPrice(price);
+            foundCake.setHasSize(hasSize);
+
+            if (imageFile != null && !imageFile.isEmpty()) {
+                String fileName = UUID.randomUUID().toString() + "_" + imageFile.getOriginalFilename();
+                Path uploadPath = Paths.get("uploads/");
+
+                if (!Files.exists(uploadPath)) {
+                    Files.createDirectories(uploadPath);
+                }
+
+                Path filePath = uploadPath.resolve(fileName);
+                Files.copy(imageFile.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
+
+                foundCake.setImageURL(fileName);
+            }
+
+            cakeService.updateCake(foundCake);
+            redirectAttributes.addFlashAttribute("successMessage", "Cake updated successfully!");
+
+        } catch (IOException e) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Error uploading file: " + e.getMessage());
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Error updating cake: " + e.getMessage());
+        }
+
+        return "redirect:/admin/cake/update/" + id;
+    }
 
 
 }

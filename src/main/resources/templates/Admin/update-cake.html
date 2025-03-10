@@ -31,52 +31,47 @@
             <div class="panel panel-default">
                 <div class="panel-heading">Add Cakes</div>
                 <div class="panel-body">
-                    <form th:action="@{/admin/cake/add}" method="post" enctype="multipart/form-data">
+                    <form th:action="@{/admin/cake/update/{id}(id=${cake.id})}" method="post" enctype="multipart/form-data">
                         <div class="form-group">
-                            <label>Select Cake Categories (<code>Ctrl + Click</code> for multiple choices):</label>
-                            <select class="form-control" id="categorySelect" name="categoryIds" multiple onchange="updatePrefixOptions()" required>
-                                <option th:each="cat : ${categories}" th:value="${cat.id}" th:text="${cat.name}"></option>
-                            </select>
-                        </div>
-
-                        <div class="form-group" id="cakeIdContainer" style="display: none;">
                             <label>Cake ID:</label>
-                            <div class="d-flex" style="display: flex; gap: 15px">
-                                <select class="form-control me-2" id="prefixSelect" name="categoryId" style="width: 100px;" required>
-                                </select>
-
-                                <input type="text" class="form-control" name="cakeNumber" id="cakeNumber"
-                                       placeholder="Enter 4-digit number" maxlength="4" style="width: 200px;" required>
-                            </div>
+                            <input type="text" class="form-control" th:value="${cake.id}" readonly>
                         </div>
 
-
+                        <div class="form-group">
+                            <label>Category:</label>
+                            <input type="text" class="form-control"
+                                   th:value="${cake.categories.iterator().next().name}" readonly>
+                        </div>
 
                         <div class="form-group">
                             <label>Cake Name:</label>
-                            <input type="text" class="form-control" name="cakeName" required>
+                            <input type="text" class="form-control" name="cakeName" th:value="${cake.name}" required>
                         </div>
 
                         <div class="form-group">
-                            <label>Image:</label>
+                            <label>Current Image:</label>
+                            <div>
+                                <img th:src="@{'/uploads/' + ${cake.imageURL}}" alt="Cake Image" style="width: 150px; height: auto;">
+                            </div>
+                            <label>Upload New Image:</label>
                             <input type="file" class="form-control" name="cakeImage">
                         </div>
 
                         <div class="form-group">
                             <label>Cake With Size:</label>
                             <select class="form-control" name="withSize">
-                                <option value="true">Yes</option>
-                                <option value="false">No</option>
+                                <option value="true" th:selected="${cake.hasSize}">Yes</option>
+                                <option value="false" th:selected="${!cake.hasSize}">No</option>
                             </select>
                         </div>
 
-
                         <div class="form-group">
                             <label>Price:</label>
-                            <input type="number" class="form-control" name="cakePrice" min="0" step="0.01" required placeholder="e.g., 300 for 300,000 VND">
+                            <input type="number" class="form-control" name="cakePrice" th:value="${cake.price}" min="0" step="0.01" required>
                         </div>
 
-                        <button type="submit" class="btn btn-success">Add Cake</button>
+                        <button type="submit" class="btn btn-primary">Update Cake</button>
+                        <a th:href="@{/admin/cake/manage}" class="btn btn-secondary" style="background-color: #2b542c; color: whitesmoke">Back</a>
                     </form>
                 </div>
             </div>

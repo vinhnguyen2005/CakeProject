@@ -12,27 +12,30 @@ import java.util.List;
 public class CakeService {
 
     @Autowired
-    private CakeProductRepository repository;
+    private CakeProductRepository cakeRepository;
 
     public List<Cake> getTopCakesByCategory(String categoryId, int limit, int offset) {
-        return repository.findTopCakesByCategory(categoryId, limit, offset);
+        return cakeRepository.findTopCakesByCategory(categoryId, limit, offset);
     }
 
     public Cake getCakeById(String id) {
-        return repository.findCakeById(id);
+        return cakeRepository.findCakeById(id);
     }
 
     public int getTotalPages(String categoryID, int pageSize) {
-        int totalItems = repository.countCakesByCategory(categoryID);
+        int totalItems = cakeRepository.countCakesByCategory(categoryID);
         return (int) Math.ceil((double) totalItems / pageSize);
     }
 
     public List<Cake> getCakeProductsById(String categoryId) {
-        return repository.findByCategoryID(categoryId);
+        return cakeRepository.findByCategoryID(categoryId);
     }
 
-    public List<Cake> getAllCakes() { return repository.findAll(); }
+    public List<Cake> getAllCakes() { return cakeRepository.findAll(); }
 
-    public boolean existById(String id) { return repository.existsById(id); }
+    public boolean existById(String id) { return cakeRepository.existsById(id); }
 
+    public void deleteById(String id) { cakeRepository.deleteById(id); }
+
+    public void updateCake(Cake cake) { cakeRepository.save(cake); }
 }
