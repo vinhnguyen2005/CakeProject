@@ -24,6 +24,17 @@ public class OrderDetails {
 
     private String size;
 
+    @Transient
+    private String formattedPrice;
+
+    public String getFormattedPrice() {
+        return formattedPrice;
+    }
+
+    public void setFormattedPrice(String formattedPrice) {
+        this.formattedPrice = formattedPrice;
+    }
+
     public String getSize() {
         return size;
     }

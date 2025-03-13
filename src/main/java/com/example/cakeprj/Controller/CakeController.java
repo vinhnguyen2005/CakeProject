@@ -69,17 +69,23 @@ public class CakeController {
         cake.setFormattedPrice(PriceFormatter.formatPrice(cake.getPrice()));
 
         Map<String, String> priceWithSize = new LinkedHashMap<>();
-        priceWithSize.put("16 cm", PriceFormatter.formatPrice(cake.getPrice()));
-        priceWithSize.put("18 cm", PriceFormatter.formatPrice(cake.getPrice() + 50));
-        priceWithSize.put("20 cm", PriceFormatter.formatPrice(cake.getPrice() + 100));
-        priceWithSize.put("22 cm", PriceFormatter.formatPrice(cake.getPrice() + 150));
-        priceWithSize.put("24 cm", PriceFormatter.formatPrice(cake.getPrice() + 250));
-        priceWithSize.put("26 cm", PriceFormatter.formatPrice(cake.getPrice() + 350));
+
+        if (cake.getHasSize()) {
+            priceWithSize.put("16 cm", PriceFormatter.formatPrice(cake.getPrice()));
+            priceWithSize.put("18 cm", PriceFormatter.formatPrice(cake.getPrice() + 50));
+            priceWithSize.put("20 cm", PriceFormatter.formatPrice(cake.getPrice() + 100));
+            priceWithSize.put("22 cm", PriceFormatter.formatPrice(cake.getPrice() + 150));
+            priceWithSize.put("24 cm", PriceFormatter.formatPrice(cake.getPrice() + 250));
+            priceWithSize.put("26 cm", PriceFormatter.formatPrice(cake.getPrice() + 350));
+        } else {
+            priceWithSize.put("16 cm", PriceFormatter.formatPrice(cake.getPrice()));
+        }
 
         model.addAttribute("cakedetails", cake);
         model.addAttribute("priceWithSize", priceWithSize);
         return "details";
     }
+
 
     @GetMapping("/gateux/{categoryId}")
     public String gateuxPage(@PathVariable String categoryId, @RequestParam(defaultValue = "1") int page, Model model) {

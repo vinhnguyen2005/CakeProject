@@ -32,6 +32,7 @@ body {
     width: 150px;
 }
 
+
 #dataTables-example td:nth-child(5) {
     width: 150px;
 }
@@ -46,4 +47,8 @@ body {
 
 #dataTables-example td:nth-child(4) {
     width: 100px;
+}
+
+#dataTables-example th:nth-child(1){
+    width: 70px;
 }

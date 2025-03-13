@@ -1,70 +1,97 @@
 package com.example.cakeprj.Entity;
 
-
 import jakarta.persistence.*;
 import org.hibernate.annotations.UuidGenerator;
-
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.Set;
 import java.util.UUID;
-import java.util.function.DoubleToLongFunction;
 
 @Entity
 @Table(name = "orders")
 public class Order {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @UuidGenerator
     private UUID id;
-    private Date orderDate;
+
+    private LocalDateTime orderDate;
+
     private Double totalPrice;
+
+    @Enumerated(EnumType.STRING)
+    private OrderStatus status;
+
+    private String fullName;
+    private String phone;
+    private String address;
+    @Column(columnDefinition = "TEXT")
+    private String note;
+    private String city;
+    @Transient
+    private String formattedPrice;
 
     @ManyToOne
     @JoinColumn(name = "user_id")
     private Users user;
 
-    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<OrderDetails> orderDetails;
 
-    public UUID getId() {
-        return id;
+
+    public Order() {
+        this.orderDate = LocalDateTime.now();
+        this.status = OrderStatus.CHO_XAC_NHAN;
     }
 
-    public void setId(UUID id) {
-        this.id = id;
+    // Getters và Setters
+
+    public String getFormattedPrice() {
+        return formattedPrice;
     }
 
-    public Date getOrderDate() {
-        return orderDate;
+    public void setFormattedPrice(String formattedPrice) {
+        this.formattedPrice = formattedPrice;
     }
 
-    public void setOrderDate(Date orderDate) {
-        this.orderDate = orderDate;
+    public String getCity() {
+        return city;
     }
 
-    public Double getTotalPrice() {
-        return totalPrice;
+    public void setCity(String city) {
+        this.city = city;
     }
 
-    public void setTotalPrice(Double totalPrice) {
-        this.totalPrice = totalPrice;
+    public String getNote() {
+        return note;
     }
 
-    public Users getUser() {
-        return user;
+    public void setNote(String note) {
+        this.note = note;
     }
 
-    public void setUser(Users user) {
-        this.user = user;
-    }
+    public UUID getId() { return id; }
+    public void setId(UUID id) { this.id = id; }
 
-    public Set<OrderDetails> getOrderDetails() {
-        return orderDetails;
-    }
+    public LocalDateTime getOrderDate() { return orderDate; }
+    public void setOrderDate(LocalDateTime orderDate) { this.orderDate = orderDate; }
 
-    public void setOrderDetails(Set<OrderDetails> orderDetails) {
-        this.orderDetails = orderDetails;
-    }
+    public Double getTotalPrice() { return totalPrice; }
+    public void setTotalPrice(Double totalPrice) { this.totalPrice = totalPrice; }
+
+    public OrderStatus getStatus() { return status; }
+    public void setStatus(OrderStatus status) { this.status = status; }
+
+    public String getFullName() { return fullName; }
+    public void setFullName(String fullName) { this.fullName = fullName; }
+
+    public String getPhone() { return phone; }
+    public void setPhone(String phone) { this.phone = phone; }
+
+    public String getAddress() { return address; }
+    public void setAddress(String address) { this.address = address; }
+
+    public Users getUser() { return user; }
+    public void setUser(Users user) { this.user = user; }
+
+    public Set<OrderDetails> getOrderDetails() { return orderDetails; }
+    public void setOrderDetails(Set<OrderDetails> orderDetails) { this.orderDetails = orderDetails; }
 }
-
-
-

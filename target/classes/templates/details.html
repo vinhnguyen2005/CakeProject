@@ -38,12 +38,13 @@
             <div class="price">
                 <p>Giá: <strong id="displayprice" th:text="${cakedetails.formattedPrice}  + 'đ'"></strong></p>
             </div>
-            <!-- Sizes -->
-            <div class="size">
+            <!--Size-->
+            <div class="size" th:if="${cakedetails.hasSize}">
                 <p>Kích Thước:</p>
                 <div class="size-options">
                     <button th:each="price, status : ${priceWithSize}"
-                            th:class="${status.index == 0} ? 'size-option active' : 'size-option'"
+                            th:classappend="${status.index == 0} ? 'active'"
+                            class="size-option"
                             th:value="${price.value}"
                             th:text="${price.key}"
                             onclick="updatePrice(this)">
@@ -70,7 +71,7 @@
                     <input type="hidden" name="size" id="sizeInput">
                     <input type="hidden" name="quantity" id="quantityInput" value="1">
                     <input type="hidden" name="price" id="priceInput" th:value="${cakedetails.price != null ? cakedetails.price : '0'}">
-
+                    <input type="hidden" name="unitPrice" id="unitPriceInput" th:value="${cakedetails.price != null ? cakedetails.price : '0'}">
 
                     <input type="hidden" name="redirectToCart" value="false">
                     <button type="submit" class="add-to-cart">Thêm vào giỏ hàng</button>
@@ -84,7 +85,7 @@
                     <input type="hidden" name="size" id="sizeInput2">
                     <input type="hidden" name="quantity" id="quantityInput2" value="1">
                     <input type="hidden" name="price" id="priceInput2" th:value="${cakedetails.price != null ? cakedetails.price : '0'}">
-
+                    <input type="hidden" name="unitPrice" id="unitPriceInput2" th:value="${cakedetails.price != null ? cakedetails.price : '0'}">
                     <input type="hidden" name="redirectToCart" value="true">
                     <button type="submit" class="buy-now">Mua ngay</button>
                 </form>

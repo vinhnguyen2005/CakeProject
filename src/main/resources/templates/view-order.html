@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đài Bắc Bakery - Đơn Hàng Của Bạn</title>
+    <link rel="stylesheet" th:href="@{/css/order-view.css?version=51}">
+    <script type="text/javascript" th:src="@{/js/cart.js}"></script>
+    <script type="text/javascript" th:src="@{/Common/adminMode.js}"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+</head>
+<body>
+
+<!-- Header -->
+<header th:replace="~{fragments/header :: header}"></header>
+
+<!-- Banner -->
+<section class="banner">
+    <img th:src="@{/img/banner.png}" alt="cake">
+    <h2>Đơn hàng của bạn</h2>
+</section>
+
+<!-- Order Content -->
+<div class="order-container">
+    <th:block th:if="${orders != null and not #lists.isEmpty(orders)}">
+        <div class="order-id">
+            Đơn hàng của: <span th:text="${user.lastName ?: ''} + ' ' + ${user.firstName ?: ''}"></span>
+        </div>
+
+        <table>
+            <thead>
+            <tr>
+                <th>Mã Đơn Đặt Hàng</th>
+                <th>Ngày đặt</th>
+                <th>Trạng thái</th>
+                <th>Xem chi tiết</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="order : ${orders}">
+                <td th:text="${order.id}"></td>
+                <td th:text="${#temporals.format(order.orderDate, 'dd/MM/yyyy HH:mm:ss')}"></td>
+                <td th:text="${order.status}"></td>
+                <td>
+                    <a th:href="@{/order/details/{id}(id=${order.id})}" class="btn-view">Xem</a>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </th:block>
+
+    <th:block th:if="${orders == null or #lists.isEmpty(orders)}">
+        <div class="empty-order">
+            <p class="empty-message">Bạn chưa đặt đơn hàng nào 😥</p>
+            <p class="continue-shopping">
+                Tiếp tục mua hàng <a th:href="@{/home}">tại đây.</a>
+            </p>
+        </div>
+    </th:block>
+</div>
+
+<!-- Footer -->
+<footer th:replace="~{fragments/footer :: footer}"></footer>
+
+</body>
+</html>

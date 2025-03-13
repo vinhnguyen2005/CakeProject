@@ -30,7 +30,11 @@ public class UserSecurityConfig {
                 .securityMatcher("/**")
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/login", "/home", "/register", "/details/**", "/css/**", "/js/**", "/uploads/**", "/Common/**", "/img/**", "/Admin/assets/**").permitAll()
+                        .requestMatchers("/cart/**").authenticated()
                         .anyRequest().authenticated()
+                )
+                .csrf(csrf -> csrf
+                        .ignoringRequestMatchers("/cart/**") // Disable CSRF protection for cart-related requests
                 )
                 .formLogin(form -> form
                         .loginPage("/login")

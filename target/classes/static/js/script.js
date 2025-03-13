@@ -2,8 +2,17 @@ let basePrice = 0;
 
 document.addEventListener("DOMContentLoaded", function() {
     let activeButton = document.querySelector(".size-option.active");
+
     if (activeButton) {
         updatePrice(activeButton);
+    } else {
+        let priceElement = document.getElementById('displayprice');
+        if (priceElement) {
+            let priceText = priceElement.textContent.replace(/\./g, '').replace('đ', '').trim();
+            basePrice = parseFloat(priceText) || 0;
+
+            updateTotalPrice();
+        }
     }
 });
 
@@ -13,9 +22,15 @@ function updatePrice(button) {
     let selectedSize = button.textContent.trim();
 
     document.getElementById('displayprice').innerHTML = formatPrice(basePrice * getQuantity()) + "đ";
+
     document.getElementById("sizeInput").value = selectedSize;
     document.getElementById("sizeInput2").value = selectedSize;
+
+    document.getElementById("unitPriceInput").value = basePrice;
+    document.getElementById("unitPriceInput2").value = basePrice;
+
     document.getElementById("priceInput").value = basePrice * getQuantity();
+    document.getElementById("priceInput2").value = basePrice * getQuantity();
 
 
     document.querySelectorAll('.size-option').forEach(btn => btn.classList.remove("active"));

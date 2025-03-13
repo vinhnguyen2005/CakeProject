@@ -1,9 +1,6 @@
 package com.example.cakeprj.Controller;
 
-import com.example.cakeprj.Entity.Cake;
-import com.example.cakeprj.Entity.Category;
-import com.example.cakeprj.Entity.MainCategory;
-import com.example.cakeprj.Entity.Users;
+import com.example.cakeprj.Entity.*;
 import com.example.cakeprj.Repository.CakeProductRepository;
 import com.example.cakeprj.Repository.UserRepository;
 import com.example.cakeprj.Security.CustomUserDetails;
@@ -39,8 +36,9 @@ public class AdminPageController {
     private final CartService cartService;
     private final CakeService cakeService;
     private final CakeProductRepository cakeProductRepository;
+    private final OrderService orderService;
 
-    public AdminPageController(UserRepository userRepository, UserService userService, CategoryService categoryService, MainCategoryService mainCategoryService, CartService cartService, CakeService cakeService, CakeProductRepository cakeProductRepository) {
+    public AdminPageController(UserRepository userRepository, UserService userService, CategoryService categoryService, MainCategoryService mainCategoryService, CartService cartService, CakeService cakeService, CakeProductRepository cakeProductRepository, OrderService orderService) {
         this.userRepository = userRepository;
         this.userService = userService;
         this.categoryService = categoryService;
@@ -48,6 +46,7 @@ public class AdminPageController {
         this.cartService = cartService;
         this.cakeService = cakeService;
         this.cakeProductRepository = cakeProductRepository;
+        this.orderService = orderService;
     }
 
     @GetMapping("/dashboard")
@@ -339,6 +338,31 @@ public class AdminPageController {
 
         return "redirect:/admin/cake/update/" + id;
     }
+
+    @GetMapping("/orders")
+    public String showOrders(@RequestParam(required = false) OrderStatus status, Model model) {
+        List<Order> orders;
+        if (status == null) {
+            orders = orderService.getAllOrders();
+        } else {
+            orders = orderService.getOrderByOrderStatus(status);
+        }
+        for(Order order : orders) {
+            order.setFormattedPrice(PriceFormatter.formatPrice(order.getTotalPrice() / 1000));
+        }
+
+        List<OrderStatus> orderStatuses = orderService.getAllStatuses();
+        System.out.println("Received status: " + status);
+        System.out.println("Order Status List: " + orderStatuses);
+
+        model.addAttribute("orders", orders);
+        model.addAttribute("orderStatuses", orderStatuses);
+        assert status != null;
+        model.addAttribute("selectedStatus", status);
+
+        return "Admin/admin-order-table";
+    }
+
 
 
 }

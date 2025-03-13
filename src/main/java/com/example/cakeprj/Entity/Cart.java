@@ -13,15 +13,18 @@ public class Cart {
     private String cakeID;
     private String name;
     private String imageURL;
+
+    @Column(nullable = true)
     private String size;
     private int quantity;
     private double price;
+    private double unitprice;
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
     private Users user;
 
-    public Cart(String cakeID, String name, String imageURL, String size, int quantity, double price, Users user) {
+    public Cart(String cakeID, String name, String imageURL, String size, int quantity, double price, Users user, double unitprice) {
         this.cakeID = cakeID;
         this.name = name;
         this.imageURL = imageURL;
@@ -29,9 +32,32 @@ public class Cart {
         this.quantity = quantity;
         this.price = price;
         this.user = user;
+        this.unitprice = unitprice;
+    }
+
+
+    @Transient
+    private String formattedPrice;
+
+    public String getFormattedPrice() {
+        return formattedPrice;
+    }
+
+
+
+    public void setFormattedPrice(String formattedPrice) {
+        this.formattedPrice = formattedPrice;
     }
 
     public Cart() {
+    }
+
+    public double getUnitprice() {
+        return unitprice;
+    }
+
+    public void setUnitprice(double unitprice) {
+        this.unitprice = unitprice;
     }
 
     public UUID getId() {

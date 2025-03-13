@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chi tiết đơn hàng - Đài Bắc Bakery</title>
+    <link rel="stylesheet" th:href="@{/css/order-details.css?version=51}">
+    <script type="text/javascript" th:src="@{/js/cart.js}"></script>
+    <script type="text/javascript" th:src="@{/Common/adminMode.js}"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
+</head>
+<body>
+
+<!-- Header -->
+<header th:replace="~{fragments/header :: header}"></header>
+
+<!-- Banner -->
+<section class="banner">
+    <img th:src="@{/img/banner.png}" alt="cake">
+    <h2>Chi tiết đơn hàng</h2>
+</section>
+
+<!-- Order Details -->
+<div class="order-details-container">
+    <div class="order-info">
+        <p>Mã đơn hàng: <span th:text="${order.id}"></span></p>
+        <p>Ngày đặt: <span th:text="${#temporals.format(order.orderDate, 'dd/MM/yyyy HH:mm:ss')}"></span></p>
+        <p>Trạng thái: <span th:text="${order.status}"></span></p>
+    </div>
+
+    <table>
+        <thead>
+        <tr>
+            <th>Mã đơn hàng</th>
+            <th>Ảnh</th>
+            <th>Tên bánh</th>
+            <th>Kích cỡ</th>
+            <th>Số lượng</th>
+            <th>Giá</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="item : ${orderDetails}">
+            <td th:text="${order.id}"></td>
+            <td><img th:src="@{'/uploads/' + ${item.cake.imageURL}}" alt="Cake Image" class="product-image"></td>
+            <td th:text="${item.cake.name}"></td>
+            <td th:text="${item.size}"></td>
+            <td th:text="${item.quantity}"></td>
+            <td th:text="${item.formattedPrice} + 'đ'"></td>
+        </tr>
+        <tr class="grand-total">
+            <td colspan="5" style="text-align: right;">Tổng cộng:</td>
+            <td th:text="${order.formattedPrice} + 'đ'"></td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+<!-- Footer -->
+<footer th:replace="~{fragments/footer :: footer}"></footer>
+
+</body>
+</html>

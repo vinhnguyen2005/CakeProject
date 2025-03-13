@@ -32,6 +32,9 @@ body {
     width: 150px;
 }
 
+#filterForm{
+    display: inline-block;
+}
 
 #dataTables-example td:nth-child(5) {
     width: 150px;
@@ -42,7 +45,7 @@ body {
 }
 
 #dataTables-example td:nth-child(3) {
-    width: 350px;
+    width: 200px;
 }
 
 #dataTables-example td:nth-child(4) {
@@ -50,5 +53,10 @@ body {
 }
 
 #dataTables-example th:nth-child(1){
-    width: 70px;
+    width: 200px;
+}
+
+#dataTables-example td:nth-child(7){
+    width: 170px;
+    text-align: center;
 }
