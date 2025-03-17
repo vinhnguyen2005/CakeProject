@@ -165,4 +165,15 @@ public class CakeController {
 
         return "redirect:/home";
     }
+
+    @GetMapping("/search")
+    public String searchCakes(@RequestParam("query") String query, Model model) {
+        List<Cake> cakes = cakeService.findCakeFromSearch(query);
+        for (Cake cake : cakes) {
+            cake.setFormattedPrice(PriceFormatter.formatPrice(cake.getPrice()));
+        }
+        model.addAttribute("cakes", cakes);
+        model.addAttribute("query", query);
+        return "search-results";
+    }
 }

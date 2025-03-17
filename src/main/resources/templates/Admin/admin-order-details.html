@@ -121,7 +121,7 @@
                     <div class="form-group d-flex align-items-center">
                         <label for="status" class="mr-2 font-weight-bold">Restaurant Status :</label>
                         <select id="status" name="status" class="status-form"
-                                th:disabled="${order.status == T(com.example.cakeprj.Entity.OrderStatus).DA_HUY}">
+                                th:disabled="${order.status != null and order.status.name() == 'DA_HUY'}">
                             <option th:each="status : ${orderStatuses}"
                                     th:if="${status != T(com.example.cakeprj.Entity.OrderStatus).DA_HUY}"
                                     th:value="${status.name()}"

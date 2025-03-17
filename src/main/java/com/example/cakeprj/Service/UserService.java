@@ -9,10 +9,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 @Service
 public class UserService {
@@ -64,6 +61,14 @@ public class UserService {
         userToSave.setRoles(userRoles);
 
         userRepository.save(userToSave);
+    }
+
+    public void updateUserPassword(UUID userId, String newPassword) {
+        Users user = userRepository.findById(userId)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found with ID: " + userId));
+
+        user.setPassword(newPassword);
+        userRepository.save(user);
     }
 
     public void updateUser(Users updatedUser){

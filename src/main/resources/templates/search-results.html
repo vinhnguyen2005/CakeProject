@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đài Bắc Bakery</title>
+    <link rel="stylesheet" th:href="@{/css/style-search.css?version=51}">
+    <script type="text/javascript" th:src="@{/Common/adminMode.js}"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+</head>
+<body>
+<!-- Header -->
+<header th:replace="~{fragments/header :: header}"></header>
+<!-- Banner -->
+<section class="banner">
+    <img th:src="@{/img/banner.png}" alt="cake">
+</section>
+
+<!-- Products Section -->
+<section class="products-section">
+    <h2>Kết Quả Tìm Kiếm</h2>
+    <p th:if="${query}" th:text="'Kết quả cho: ' + ${query}" class="search-result-text"></p>
+
+    <div th:if="${cakes.isEmpty()}" class="no-results">
+        <p>Không tìm thấy sản phẩm nào!</p>
+    </div>
+    <div class="products-grid">
+        <div th:each="cake : ${cakes}" class="product-card">
+            <a th:href="@{'/details/' + ${cake.id}}" class="product-card-a">
+                <img th:src="@{'/uploads/' + ${cake.imageURL}}" alt="Cake Image">
+                <h3 th:text="${cake.name}"></h3>
+                <p th:text="${cake.id}"></p>
+                <div class="product-price-action">
+                    <div class="product-price" th:text="${cake.formattedPrice} + ' đ'"></div>
+                    <button class="add-to-cart-btn">🛒</button>
+                </div>
+            </a>
+        </div>
+    </div>
+</section>
+
+
+<script>
+    document.addEventListener("keydown", function (event) {
+        if (event.shiftKey && (event.key === "V" || event.key === "v")) {
+            alert("Admin mode activated! Not an Admin? Please contact: 0915336966.");
+            window.location.href = "/daibacbakery/admin/login";
+        }
+    });
+
+
+</script>
+
+
+<!-- Footer -->
+<footer th:replace="~{fragments/footer :: footer}"></footer>
+</body>
+</html>

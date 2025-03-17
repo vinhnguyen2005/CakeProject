@@ -49,4 +49,8 @@ public class CakeService {
     public void deleteById(String id) { cakeRepository.deleteById(id); }
 
     public void updateCake(Cake cake) { cakeRepository.save(cake); }
+
+    public List<Cake> findCakeFromSearch(String searchText) {
+        return cakeRepository.findByNameContainingIgnoreCase(searchText);
+    }
 }

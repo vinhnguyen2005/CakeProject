@@ -11,15 +11,40 @@ public class Users {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
+
     private String username;
     private String password;
     private String email;
     private String firstName;
     private String lastName;
-
     private String phoneNumber;
 
-    @ManyToMany(fetch = FetchType.EAGER, cascade=CascadeType.ALL)
+    private String resetToken;
+
+    @Column(name = "token_expiry")
+    private Long tokenExpiry;
+
+    // Constructors
+    public Users() {}
+
+
+    public String getResetToken() {
+        return resetToken;
+    }
+
+    public void setResetToken(String resetToken) {
+        this.resetToken = resetToken;
+    }
+
+    public Long getTokenExpiry() {
+        return tokenExpiry;
+    }
+
+    public void setTokenExpiry(Long tokenExpiry) {
+        this.tokenExpiry = tokenExpiry;
+    }
+
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinTable(
             name = "user_roles",
             joinColumns = @JoinColumn(name = "user_id"),
@@ -35,6 +60,7 @@ public class Users {
         this.roles = roles;
     }
 
+    // Other Getters and Setters
     public UUID getId() {
         return id;
     }

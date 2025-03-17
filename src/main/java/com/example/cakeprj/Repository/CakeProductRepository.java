@@ -29,5 +29,6 @@ public interface CakeProductRepository extends JpaRepository<Cake, String> {
     List<Cake> findTopCakesByCategory(@Param("categoryID") String categoryID,
                                       @Param("size") int size,
                                       @Param("startIndex") int startIndex);
+    List<Cake> findByNameContainingIgnoreCase(String name);
 
 }

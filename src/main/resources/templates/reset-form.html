@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đài Bắc Bakery - Reset Password</title>
+    <link rel="stylesheet" th:href="@{/css/style-login.css?version=51}">
+    <script type="text/javascript" th:src="@{/js/script.js}"></script>
+    <script type="text/javascript" th:src="@{/Common/adminMode.js}"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+</head>
+<body>
+<!-- Header -->
+<header th:replace="~{fragments/header :: header}"></header>
+
+<!-- Banner -->
+<section class="banner">
+    <img th:src="@{/img/background-gateux2.jpg}" alt="cake">
+    <h2>Đăng Nhập</h2>
+</section>
+
+<!-- Login Section -->
+<section class="login-container">
+    <div class="login-box">
+        <h2>Reset Your Password</h2>
+
+        <p th:if="${error}" th:text="${error}" style="color: red;"></p>
+
+        <form action="@{/password/reset}" method="post" onsubmit="return validatePassword()">
+            <input type="hidden" name="token" th:value="${token}"/>
+
+            <label for="newPassword">New Password:</label>
+            <input type="password" id="newPassword" name="newPassword" required oninput="checkPasswords()">
+
+            <label for="confirmPassword">Confirm Password:</label>
+            <input type="password" id="confirmPassword" name="confirmPassword" required oninput="checkPasswords()">
+
+            <p id="passwordError" style="color: red; display: none;">Passwords do not match!</p>
+
+            <button type="submit">Reset Password</button>
+        </form>
+
+        <p><a href="/login">Back to Login</a></p>
+    </div>
+</section>
+
+<!--Footer-->
+<footer th:replace="~{fragments/footer :: footer}"></footer>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        let newPassword = document.getElementById("newPassword");
+        let confirmPassword = document.getElementById("confirmPassword");
+        let errorMsg = document.getElementById("passwordError");
+
+        confirmPassword.onpaste = (e) => e.preventDefault();
+        confirmPassword.oncopy = (e) => e.preventDefault();
+
+        function checkPasswords() {
+            if (newPassword.value !== confirmPassword.value) {
+                errorMsg.style.display = "block";
+                confirmPassword.style.border = "2px solid red";
+            } else {
+                errorMsg.style.display = "none";
+                confirmPassword.style.border = "2px solid green";
+            }
+        }
+
+        newPassword.addEventListener("input", checkPasswords);
+        confirmPassword.addEventListener("input", checkPasswords);
+    });
+
+    function validatePassword() {
+        let newPassword = document.getElementById("newPassword").value;
+        let confirmPassword = document.getElementById("confirmPassword").value;
+
+        if (newPassword !== confirmPassword) {
+            return false;
+        }
+        return true;
+    }
+</script>
+
+
+</body>
+</html>

@@ -21,3 +21,15 @@ spring:
     mode: HTML
     cache: false
     logging-level: TRACE
+
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: nguyenthanhvinh07052005@gmail.com
+    password: zfmo npsk rvnz xvua
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
