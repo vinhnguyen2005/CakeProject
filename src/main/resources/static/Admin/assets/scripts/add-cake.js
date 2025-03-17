@@ -44,7 +44,7 @@ document.addEventListener("DOMContentLoaded", function () {
         if (selectedCategory === "") {
             table.search("").columns().search("").draw();
         } else {
-            table.column(2).search(selectedCategory, false, true).draw();
+            table.column(2).search("\\b" + selectedCategory + "\\b", true, false).draw();
         }
     });
 });

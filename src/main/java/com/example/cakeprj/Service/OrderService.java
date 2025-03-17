@@ -55,4 +55,8 @@ public class OrderService {
         return Arrays.asList(OrderStatus.values());
     }
 
+    public void updateOrder(Order order) {
+        orderRepository.save(order);
+    }
+
 }

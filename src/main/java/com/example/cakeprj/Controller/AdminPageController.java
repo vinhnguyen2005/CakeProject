@@ -37,8 +37,9 @@ public class AdminPageController {
     private final CakeService cakeService;
     private final CakeProductRepository cakeProductRepository;
     private final OrderService orderService;
+    private final OnlineUserService onlineUserService;
 
-    public AdminPageController(UserRepository userRepository, UserService userService, CategoryService categoryService, MainCategoryService mainCategoryService, CartService cartService, CakeService cakeService, CakeProductRepository cakeProductRepository, OrderService orderService) {
+    public AdminPageController(UserRepository userRepository, OnlineUserService onlineUserService,UserService userService, CategoryService categoryService, MainCategoryService mainCategoryService, CartService cartService, CakeService cakeService, CakeProductRepository cakeProductRepository, OrderService orderService) {
         this.userRepository = userRepository;
         this.userService = userService;
         this.categoryService = categoryService;
@@ -47,6 +48,7 @@ public class AdminPageController {
         this.cakeService = cakeService;
         this.cakeProductRepository = cakeProductRepository;
         this.orderService = orderService;
+        this.onlineUserService = onlineUserService;
     }
 
     @GetMapping("/dashboard")
@@ -61,6 +63,13 @@ public class AdminPageController {
             model.addAttribute("admin", customUserDetails);
         }
         return "Admin/admin-profile";
+    }
+
+    @GetMapping("/online-subcriber")
+    public String showOnlineSubcriber(Model model) {
+        List<OnlineUsers> onlineUsersList = onlineUserService.getAllOnlineUsers();
+        model.addAttribute("onlineUsersList", onlineUsersList);
+        return "Admin/onlinesubcriber";
     }
 
     @PostMapping("/updateprofile")
@@ -169,7 +178,6 @@ public class AdminPageController {
             model.addAttribute("errorMessage", errorMessage);
 
 
-
             return "Admin/update-category";
         } catch (Exception e) {
             model.addAttribute("errorMessage", "Category not found: " + e.getMessage());
@@ -184,7 +192,7 @@ public class AdminPageController {
                                  @RequestParam String mainCategory,
                                  RedirectAttributes redirectAttributes) {
         try {
-            if(categoryID != null){
+            if (categoryID != null) {
                 categoryService.updateSubCategory(categoryID, categoryName, mainCategory);
                 redirectAttributes.addFlashAttribute("successMessage", "Category updated successfully!");
             }
@@ -262,7 +270,7 @@ public class AdminPageController {
     }
 
     @GetMapping("/cake/manage")
-    public String showManageCakeTable(@ModelAttribute("deleteSuccessful") String deleteSuccessful, @ModelAttribute("errorMessage") String errorMessage ,Model model) {
+    public String showManageCakeTable(@ModelAttribute("deleteSuccessful") String deleteSuccessful, @ModelAttribute("errorMessage") String errorMessage, Model model) {
         List<Category> categories = categoryService.getAllCategories();
         List<Cake> cakes = cakeService.getAllCakes();
         model.addAttribute("cakes", cakes);
@@ -347,7 +355,7 @@ public class AdminPageController {
         } else {
             orders = orderService.getOrderByOrderStatus(status);
         }
-        for(Order order : orders) {
+        for (Order order : orders) {
             order.setFormattedPrice(PriceFormatter.formatPrice(order.getTotalPrice() / 1000));
         }
 
@@ -361,6 +369,41 @@ public class AdminPageController {
         model.addAttribute("selectedStatus", status);
 
         return "Admin/admin-order-table";
+    }
+
+    @GetMapping("/order/view/{id}")
+    public String showOrderDetails(@PathVariable UUID id, Model model) {
+        Order foundOrder = orderService.getOrder(id);
+        List<OrderDetails> orderDetails = orderService.getOrderDetails(id);
+        List<OrderStatus> orderStatuses = orderService.getAllStatuses();
+        for(OrderDetails orderDetail : orderDetails) {
+            orderDetail.setFormattedPrice(PriceFormatter.formatPrice(orderDetail.getPrice() / 1000));
+        }
+        foundOrder.setFormattedPrice(PriceFormatter.formatPrice(foundOrder.getTotalPrice() / 1000));
+        model.addAttribute("order", foundOrder);
+        model.addAttribute("orderDetails", orderDetails);
+        model.addAttribute("orderStatuses", orderStatuses);
+        return "Admin/admin-order-details";
+    }
+
+    @PostMapping("/updateOrderStatus")
+    public String updateOrderStatus(@RequestParam("orderId") UUID orderId,
+                                    @RequestParam("status") OrderStatus status,
+                                    RedirectAttributes redirectAttributes) {
+        try {
+            System.out.println("🟢 Status received: " + status.name());
+
+            Order foundOrder = orderService.getOrder(orderId);
+            if (foundOrder != null) {
+                foundOrder.setStatus(status);
+                orderService.updateOrder(foundOrder);
+            }
+            redirectAttributes.addFlashAttribute("success", "Order status has been changed!");
+            return "redirect:/admin/order/view/" + orderId;
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Error updating order status: " + e.getMessage());
+            return "redirect:/admin/order/view/" + orderId;
+        }
     }
 
 

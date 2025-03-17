@@ -2,17 +2,20 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 
 <head>
-
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Dashboard</title>
 
     <!-- Core CSS -->
-    <link th:href="@{/Admin/assets/plugins/bootstrap/bootstrap.css}" rel="stylesheet" />
-    <link th:href="@{/Admin/assets/font-awesome/css/font-awesome.css}" rel="stylesheet" />
-    <link th:href="@{/Admin/assets/plugins/pace/pace-theme-big-counter.css}" rel="stylesheet" />
-    <link th:href="@{/Admin/assets/css/style.css}" rel="stylesheet" />
-    <link th:href="@{/Admin/assets/css/main-style.css}" rel="stylesheet" />
+    <link th:href="@{/Admin/assets/plugins/bootstrap/bootstrap.css}" rel="stylesheet"/>
+    <link th:href="@{/Admin/assets/font-awesome/css/font-awesome.css}" rel="stylesheet"/>
+    <link th:href="@{/Admin/assets/plugins/pace/pace-theme-big-counter.css}" rel="stylesheet"/>
+    <link th:href="@{/Admin/assets/css/style.css}" rel="stylesheet"/>
+    <link th:href="@{/Admin/assets/css/main-style.css}" rel="stylesheet"/>
+    <link th:href="@{/Admin/assets/plugins/morris/morris-0.4.3.min.css}" rel="stylesheet"/>
+
+    <!-- Include Chart.js for the donut and bar charts -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 
 <body>
@@ -27,7 +30,6 @@
             <h1 class="page-header">Dashboard</h1>
         </div>
     </div>
-
     <div class="row">
         <!-- Total Orders -->
         <div class="col-lg-3 col-md-6">
@@ -81,6 +83,31 @@
             </div>
         </div>
     </div>
+    <div class="row">
+        <!-- Donut Chart Example-->
+        <div class="col-lg-4">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    Income by Cake Category
+                </div>
+                <div class="panel-body">
+                    <canvas id="incomeDonutChart" width="400" height="400"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Bar Chart Example-->
+        <div class="col-lg-8">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    Orders Count per Month
+                </div>
+                <div class="panel-body">
+                    <canvas id="ordersBarChart" width="400" height="200"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
 <!-- Core Scripts -->
@@ -89,6 +116,97 @@
 <script th:src="@{/Admin/assets/plugins/metisMenu/jquery.metisMenu.js}"></script>
 <script th:src="@{/Admin/assets/plugins/pace/pace.js}"></script>
 <script th:src="@{/Admin/assets/scripts/siminta.js}"></script>
+<script th:src="@{/Admin/assets/plugins/morris/raphael-2.1.0.min.js}"></script>
+<script th:src="@{/Admin/assets/plugins/morris/morris.js}"></script>
+<script th:src="@{/Admin/assets/scripts/dashboard-demo.js}"></script>
+
+<!-- Script for the Donut Chart -->
+<script>
+    // Updated data for cake categories and their income
+    const cakeIncomeData = [
+        { category: 'Bánh Sinh Nhật Bé Trai - Bé Gái', income: 1 },
+        { category: 'Bánh In Ảnh', income: 1 },
+        { category: 'Khác', income: 3 },
+        { category: 'Bánh Mặn', income: 2 },
+        { category: 'Bánh Phụ Kiện', income: 1 },
+        { category: 'Bánh Sự Kiện', income: 1 },
+        { category: 'Bánh Vẽ', income: 1 },
+        { category: 'Gateaux Kem Tươi', income: 1 },
+        { category: 'Mini Cake', income: 2 },
+        { category: 'Bánh Mousse', income: 1 },
+        { category: 'Bánh Valentine - Trái Tim', income: 1 }
+    ];
+
+    // Extract categories and income values for Donut Chart
+    const labels = cakeIncomeData.map(data => data.category);
+    const incomeValues = cakeIncomeData.map(data => data.income);
+
+    // Create the donut chart
+    const donutCtx = document.getElementById('incomeDonutChart').getContext('2d');
+    new Chart(donutCtx, {
+        type: 'doughnut',
+        data: {
+            labels: labels, // Cake categories
+            datasets: [{
+                label: 'Income by Cake Category',
+                data: incomeValues, // Corresponding income for each category
+                backgroundColor: ['#FF6384', '#36A2EB', '#FFCD56', '#4BC0C0', '#FF9F40', '#FF2E00', '#8E44AD', '#3498DB', '#1ABC9C', '#F39C12', '#E74C3C'], // Customize colors for each section
+                hoverOffset: 4
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    position: 'top',
+                },
+                tooltip: {
+                    mode: 'index',
+                    intersect: false
+                }
+            },
+        }
+    });
+</script>
+
+<!-- Script for the Bar Chart (Monthly Order Count) -->
+<script>
+    // Sample data for monthly orders (you can replace this with actual data)
+    const monthlyOrderData = {
+        labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'], // Months
+        datasets: [{
+            label: 'Order Count',
+            data: [50, 70, 60, 90, 100, 110, 130], // Corresponding order counts for each month
+            backgroundColor: '#3498DB', // Blue color for bars
+            borderColor: '#2980B9',
+            borderWidth: 1
+        }]
+    };
+
+    // Create the bar chart
+    const barCtx = document.getElementById('ordersBarChart').getContext('2d');
+    new Chart(barCtx, {
+        type: 'bar',
+        data: monthlyOrderData,
+        options: {
+            responsive: true,
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            },
+            plugins: {
+                legend: {
+                    position: 'top',
+                },
+                tooltip: {
+                    mode: 'index',
+                    intersect: false
+                }
+            }
+        }
+    });
+</script>
 
 </body>
 </html>

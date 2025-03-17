@@ -41,7 +41,7 @@
 <div class="order-online">
     <img th:src="@{/img/front-view-delicious-chocolate-cake_839035-107157.avif}" alt="bgimg">
     <div class="form-overlay">
-        <form>
+        <form id="onlineOrderForm" th:action="@{/submitOnlineUser}" method="post">
             <h2>ĐẶT ONLINE NGAY!</h2>
             <label for="name">Họ tên của bạn</label>
             <input type="text" id="name" name="name" placeholder="Họ tên của bạn" required>
@@ -60,12 +60,25 @@
     </div>
 </div>
 <script>
-    document.addEventListener("keydown", function(event) {
+    document.addEventListener("keydown", function (event) {
         if (event.shiftKey && (event.key === "V" || event.key === "v")) {
             alert("Admin mode activated! Not an Admin? Please contact: 0915336966.");
             window.location.href = "/daibacbakery/admin/login";
         }
     });
+
+
+    document.getElementById("onlineOrderForm").addEventListener("submit", function(event) {
+
+        const confirmation = confirm("Bạn muốn đặt một đơn hàng online?");
+
+        if (confirmation) {
+            alert("Thông tin của bạn đã được ghi nhận, cửa hàng sẽ liên lạc với bạn trong vài giờ tới.");
+        } else {
+            event.preventDefault();
+        }
+    });
+
 </script>
 
 

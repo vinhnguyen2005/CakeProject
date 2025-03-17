@@ -60,3 +60,29 @@ body {
     width: 170px;
     text-align: center;
 }
+
+/*admin-orderdetails file*/
+.scrollable-table {
+    max-height: 482px;
+    overflow-y: auto;
+}
+
+.scrollable-table table {
+    width: 100%;
+}
+
+.scrollable-table thead {
+    position: sticky;
+    top: 0;
+    background: white;
+    z-index: 2;
+}
+
+.status-form{
+    width: 700px;
+    padding: 10px;
+    border-radius: 5px;
+    border: none;
+    font-size: 20px;
+    font-weight: bold;
+}

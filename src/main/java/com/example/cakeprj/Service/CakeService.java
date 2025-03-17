@@ -6,6 +6,7 @@ import com.example.cakeprj.dto.request.CakeCreationRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Comparator;
 import java.util.List;
 
 @Service
@@ -14,9 +15,19 @@ public class CakeService {
     @Autowired
     private CakeProductRepository cakeRepository;
 
-    public List<Cake> getTopCakesByCategory(String categoryId, int limit, int offset) {
-        return cakeRepository.findTopCakesByCategory(categoryId, limit, offset);
+    public List<Cake> getTopCakesByCategory(String categoryId, int limit, int offset, String sortOrder) {
+        List<Cake> cakes = cakeRepository.findTopCakesByCategory(categoryId, limit, offset);
+
+
+        if ("desc".equalsIgnoreCase(sortOrder)) {
+            cakes.sort(Comparator.comparing(Cake::getPrice).reversed());
+        } else {
+            cakes.sort(Comparator.comparing(Cake::getPrice));
+        }
+
+        return cakes;
     }
+
 
     public Cake getCakeById(String id) {
         return cakeRepository.findCakeById(id);

@@ -2,8 +2,10 @@ package com.example.cakeprj.Controller;
 
 import com.example.cakeprj.Entity.Cake;
 import com.example.cakeprj.Entity.Category;
+import com.example.cakeprj.Entity.OnlineUsers;
 import com.example.cakeprj.Service.CakeService;
 import com.example.cakeprj.Service.CategoryService;
+import com.example.cakeprj.Service.OnlineUserService;
 import com.example.cakeprj.util.PriceFormatter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -16,28 +18,41 @@ import java.util.*;
 public class CakeController {
     private final CakeService cakeService;
     private final CategoryService categoryService;
+    private final OnlineUserService onlineUserService;
 
     @Autowired
-    public CakeController(CakeService cakeService, CategoryService categoryService) {
+    public CakeController(CakeService cakeService, CategoryService categoryService, OnlineUserService onlineUserService) {
         this.cakeService = cakeService;
         this.categoryService = categoryService;
+        this.onlineUserService = onlineUserService;
     }
 
-    private void populateCakeModel(Model model, String categoryId, int page, String viewName) {
+    private void populateCakeModel(Model model, String categoryId, int page, String sortOrder) {
         int pageSize = 15;
         int startIndex = (page - 1) * pageSize;
 
-        List<Cake> cakeList = cakeService.getTopCakesByCategory(categoryId, pageSize, startIndex);
-        for (Cake cake : cakeList) {
+        List<Cake> allCakes = cakeService.getCakeProductsById(categoryId);
+
+        if ("desc".equalsIgnoreCase(sortOrder)) {
+            allCakes.sort(Comparator.comparing(Cake::getPrice).reversed());
+        } else {
+            allCakes.sort(Comparator.comparing(Cake::getPrice));
+        }
+
+        int endIndex = Math.min(startIndex + pageSize, allCakes.size());
+        List<Cake> paginatedCakes = allCakes.subList(startIndex, endIndex);
+
+        for (Cake cake : paginatedCakes) {
             cake.setFormattedPrice(PriceFormatter.formatPrice(cake.getPrice()));
         }
 
         String categoryName = categoryService.getCategoryName(categoryId);
         model.addAttribute("categoryName", categoryName);
-        model.addAttribute("cakelist", cakeList);
+        model.addAttribute("cakelist", paginatedCakes);
         model.addAttribute("currentPage", page);
+        model.addAttribute("sortOrder", sortOrder);
 
-        int totalPages = cakeService.getTotalPages(categoryId, pageSize);
+        int totalPages = (int) Math.ceil((double) allCakes.size() / pageSize);
         model.addAttribute("totalPages", totalPages);
     }
 
@@ -52,13 +67,16 @@ public class CakeController {
     }
 
     @GetMapping("/home")
-    public String getAllHomeCakes(Model model) {
+    public String getAllHomeCakes(Model model, @RequestParam(defaultValue = "asc") String sortOrder) {
         String defaultCategoryId = "GT";
-        List<Cake> homepageCake = cakeService.getTopCakesByCategory(defaultCategoryId, 8, 0);
+
+        List<Cake> homepageCake = cakeService.getTopCakesByCategory(defaultCategoryId, 8, 0, sortOrder);
+
         for (Cake cake : homepageCake) {
             cake.setFormattedPrice(PriceFormatter.formatPrice(cake.getPrice()));
         }
         model.addAttribute("homepagecakes", homepageCake);
+        model.addAttribute("sortOrder", sortOrder);
 
         return "home";
     }
@@ -86,10 +104,13 @@ public class CakeController {
         return "details";
     }
 
-
     @GetMapping("/gateux/{categoryId}")
-    public String gateuxPage(@PathVariable String categoryId, @RequestParam(defaultValue = "1") int page, Model model) {
-        populateCakeModel(model, categoryId, page, "gateux");
+    public String gateuxPage(
+            @PathVariable String categoryId,
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "asc") String sortOrder,
+            Model model) {
+        populateCakeModel(model, categoryId, page, sortOrder);
 
         List<Category> subcategories = getSortedSubcategories("1");
         model.addAttribute("subcategories", subcategories);
@@ -98,8 +119,12 @@ public class CakeController {
     }
 
     @GetMapping("/banhman-minicake/{categoryId}")
-    public String banhmanPage(@PathVariable String categoryId, @RequestParam(defaultValue = "1") int page, Model model) {
-        populateCakeModel(model, categoryId, page, "banhman");
+    public String banhmanPage(
+            @PathVariable String categoryId,
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "asc") String sortOrder,
+            Model model) {
+        populateCakeModel(model, categoryId, page, sortOrder);
 
         List<Category> subcategories = getSortedSubcategories("2");
         model.addAttribute("subcategories", subcategories);
@@ -108,12 +133,36 @@ public class CakeController {
     }
 
     @GetMapping("/loai-khac/{categoryId}")
-    public String banhkhacPage(@PathVariable String categoryId, @RequestParam(defaultValue = "1") int page, Model model) {
-        populateCakeModel(model, categoryId, page, "banhkhac");
+    public String banhkhacPage(
+            @PathVariable String categoryId,
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "asc") String sortOrder,
+            Model model) {
+        populateCakeModel(model, categoryId, page, sortOrder);
 
         List<Category> subcategories = getSortedSubcategories("3");
         model.addAttribute("subcategories", subcategories);
 
         return "banhkhac";
+    }
+
+    @PostMapping("/submitOnlineUser")
+    public String submitOnlineUser(@RequestParam String name,
+                                   @RequestParam String email,
+                                   @RequestParam String phone,
+                                   @RequestParam String order,
+                                   Model model) {
+
+        OnlineUsers onlineUser = new OnlineUsers();
+        onlineUser.setName(name);
+        onlineUser.setEmail(email);
+        onlineUser.setPhone(phone);
+        onlineUser.setOrderContent(order);
+
+        onlineUserService.saveOnlineUser(onlineUser);
+
+        model.addAttribute("successMessage", "Your details have been submitted successfully!");
+
+        return "redirect:/home";
     }
 }

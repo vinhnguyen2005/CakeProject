@@ -15,8 +15,12 @@ function formatPrices() {
 
         let price = parseFloat(cleanedText);
         console.log("Parsed Price:", price);
+        if(price >= 100000){
+            price/=10;
+        } else{
+            price *= 100;
+        }
 
-        price/=10;
 
         let formattedPrice = formatPrice(price) + " đ";
         console.log("Formatted Price:", formattedPrice);

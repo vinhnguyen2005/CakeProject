@@ -55,6 +55,20 @@
         </tr>
         </tbody>
     </table>
+
+    <div class="cancel-order-container">
+        <form th:action="@{/order/cancel/{id}(id=${order.id})}" method="post">
+            <button type="submit" class="btn-cancel"
+                    th:disabled="${order.status == T(com.example.cakeprj.Entity.OrderStatus).DANG_GIAO
+                              or order.status == T(com.example.cakeprj.Entity.OrderStatus).DA_GIAO
+                              or order.status == T(com.example.cakeprj.Entity.OrderStatus).DA_HUY}">
+                Hủy đơn hàng
+            </button>
+        </form>
+    </div>
+
+
+
 </div>
 
 <!-- Footer -->

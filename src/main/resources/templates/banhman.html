@@ -35,6 +35,15 @@
     <!-- Products Section -->
     <section class="products-section">
         <h2 th:text="${categoryName}"></h2>
+        <form id="filterForm" th:action="@{/banhman-minicake/{categoryId}(categoryId=${categoryId})}" method="get">
+            <div class="sort-container">
+                <label>Sort by price: </label>
+                <select id="sortPrice" name="sortOrder" onchange="this.form.submit()">
+                    <option value="asc" th:selected="${sortOrder == 'asc'}">Low to High</option>
+                    <option value="desc" th:selected="${sortOrder == 'desc'}">High to Low</option>
+                </select>
+            </div>
+        </form>
         <div class="products-grid">
             <div th:each="cake : ${cakelist}" class="product-card">
                 <a th:href="@{'/details/' + ${cake.id}}" class="product-card-a">
@@ -52,16 +61,19 @@
 </section>
 
 <div th:if="${totalPages > 0}" class="pagination">
-    <a th:href="@{'?page=' + ${currentPage - 1}}" class="page-btn prev" th:if="${currentPage > 1}">
+    <a th:href="@{'?page=' + ${currentPage - 1} + '&sortOrder=' + ${sortOrder}}"
+       class="page-btn prev" th:if="${currentPage > 1}">
         <i class="fas fa-angle-double-left"></i>
     </a>
 
     <span th:each="i : ${#numbers.sequence(1, totalPages)}">
-       <a th:href="@{'?page=' + ${i}}" class="page-btn" th:classappend="${currentPage == i} ? 'active' : ''"
+       <a th:href="@{'?page=' + ${i} + '&sortOrder=' + ${sortOrder}}"
+          class="page-btn" th:classappend="${currentPage == i} ? 'active' : ''"
           th:text="${i}"></a>
     </span>
 
-    <a th:href="@{'?page=' + ${currentPage + 1}}"class="page-btn next" th:if="${currentPage < totalPages}">
+    <a th:href="@{'?page=' + ${currentPage + 1} + '&sortOrder=' + ${sortOrder}}"
+       class="page-btn next" th:if="${currentPage < totalPages}">
         <i class="fas fa-angle-double-right"></i>
     </a>
 </div>

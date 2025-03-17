@@ -292,6 +292,26 @@ header nav {
     text-decoration: underline;
 }
 
+.remember-me {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 15px;
+}
+
+.remember-me input {
+    width: 16px;
+    height: 16px;
+    accent-color: #5c2b23;
+}
+
+.remember-me label {
+    margin-top: 10px;
+    font-size: 18px;
+    color: #5c2b23;
+    cursor: pointer;
+}
+
 /* Footer */
 footer {
     background-color: #592A2A;

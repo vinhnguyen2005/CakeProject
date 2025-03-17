@@ -26,6 +26,14 @@
         <div class="order-id">
             Đơn hàng của: <span th:text="${user.lastName ?: ''} + ' ' + ${user.firstName ?: ''}"></span>
         </div>
+        <form id="filterForm" th:action="@{/order/view-order}" method="get">
+            <label for="statusFilter">Lọc đơn hàng:</label>
+            <select id="statusFilter" name="status" onchange="this.form.submit()">
+                <option value="default" th:selected="${status == 'default'}">Đơn chưa giao & Đang giao</option>
+                <option value="all" th:selected="${status == 'all'}">Tất cả đơn hàng</option>
+            </select>
+        </form>
+
 
         <table>
             <thead>
@@ -36,8 +44,9 @@
                 <th>Xem chi tiết</th>
             </tr>
             </thead>
-            <tbody>
+            <tbody id="orderTableBody">
             <tr th:each="order : ${orders}">
+
                 <td th:text="${order.id}"></td>
                 <td th:text="${#temporals.format(order.orderDate, 'dd/MM/yyyy HH:mm:ss')}"></td>
                 <td th:text="${order.status}"></td>
@@ -46,6 +55,7 @@
                 </td>
             </tr>
             </tbody>
+
         </table>
     </th:block>
 

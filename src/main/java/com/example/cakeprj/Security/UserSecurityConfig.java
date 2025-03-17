@@ -8,7 +8,6 @@ import org.springframework.security.config.annotation.authentication.configurati
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
@@ -29,12 +28,16 @@ public class UserSecurityConfig {
         http
                 .securityMatcher("/**")
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/login", "/home", "/register", "/details/**", "/css/**", "/js/**", "/uploads/**", "/Common/**", "/img/**", "/Admin/assets/**").permitAll()
+                        .requestMatchers(
+                                "/login", "/home", "/register", "/details/**",
+                                "/gateux/**", "/banhman-minicake/**", "/loai-khac/**",
+                                "/submitOnlineUser",
+                                "/css/**", "/js/**", "/uploads/**", "/Common/**", "/img/**", "/Admin/assets/**").permitAll()
                         .requestMatchers("/cart/**").authenticated()
                         .anyRequest().authenticated()
                 )
                 .csrf(csrf -> csrf
-                        .ignoringRequestMatchers("/cart/**") // Disable CSRF protection for cart-related requests
+                        .ignoringRequestMatchers("/cart/**")
                 )
                 .formLogin(form -> form
                         .loginPage("/login")
@@ -48,6 +51,11 @@ public class UserSecurityConfig {
                         .logoutSuccessUrl("/login?logout=true")
                         .invalidateHttpSession(true)
                         .deleteCookies("JSESSIONID")
+                )
+                .rememberMe(rememberMe -> rememberMe
+                        .key("uniqueAndSecretKey")
+                        .tokenValiditySeconds(7 * 24 * 60 * 60)
+                        .rememberMeParameter("remember-me")
                 )
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)

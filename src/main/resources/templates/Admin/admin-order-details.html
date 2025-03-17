@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Orders</title>
+
+    <!-- Core CSS -->
+    <link th:href="@{/Admin/assets/plugins/bootstrap/bootstrap.css}" rel="stylesheet" />
+    <link th:href="@{/Admin/assets/font-awesome/css/font-awesome.css}" rel="stylesheet" />
+    <link th:href="@{/Admin/assets/plugins/pace/pace-theme-big-counter.css}" rel="stylesheet" />
+    <link th:href="@{/Admin/assets/css/style.css}" rel="stylesheet" />
+    <link th:href="@{/Admin/assets/css/admin-profile.css}" rel="stylesheet" />
+    <link th:href="@{/Admin/assets/css/main-style.css}" rel="stylesheet" />
+    <link th:href="@{/Admin/assets/css/order.css}" rel="stylesheet">
+
+</head>
+
+<body>
+<!-- Include Navbar and Sidebar -->
+<div th:replace="~{Admin/fragments/wrapper :: navbar}"></div>
+<div th:replace="~{Admin/fragments/wrapper :: sidebar}"></div>
+
+<!-- Main Content -->
+<div id="page-wrapper" style="background-color: #dfdfde">
+    <div class="row">
+        <div class="col-lg-12">
+            <h1 class="page-header">Order Details</h1>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- User Details Table -->
+        <div th:if="${success}" class="alert alert-success">
+            <p th:text="${success}"></p>
+        </div>
+        <div th:if="${errorMessage}" class="alert alert-danger text-center">
+            <p th:text="${errorMessage}"></p>
+        </div>
+        <div class="col-md-6">
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    <div class="table-responsive">
+                        <table class="table table-bordered">
+                            <thead>
+                            <tr>
+                                <th colspan="2" class="text-center"><h4>User Details</h4></th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr><td><b>Order ID</b></td><td th:text="${order.id}"></td></tr>
+                            <tr><td><b>First Name</b></td><td th:text="${order.user.firstName}"></td></tr>
+                            <tr><td><b>Last Name</b></td><td th:text="${order.user.lastName}"></td></tr>
+                            <tr><td><b>Email</b></td><td th:text="${order.user.email}"></td></tr>
+                            <tr><td><b>Mobile Number</b></td><td th:text="${order.user.phoneNumber}"></td></tr>
+                            <tr><td><b>City</b></td><td th:text="${order.city}"></td></tr>
+                            <tr><td><b>Address</b></td><td th:text="${order.address}"></td></tr>
+                            <tr><td><b>Order Date</b></td>
+                                <td th:text="${#temporals.format(order.orderDate, 'yyyy/MM/dd HH:mm:ss')}"></td>
+                            </tr>
+                            <tr><td><b>Order Final Status</b></td><td th:text="${order.status}"></td></tr>
+                            <tr>
+                                <td><b>Special Note</b></td>
+                                <td th:text="${order.note != null ? order.note : 'Không có'}"></td>
+                            </tr>
+
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Order Details Table (Scrollable) -->
+        <div class="col-md-6">
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    <div class="table-responsive scrollable-table">
+                        <table class="table table-bordered">
+                            <thead>
+                            <tr>
+                                <th colspan="6" class="text-center"><h4>Order Details</h4></th>
+                            </tr>
+                            <tr>
+                                <th>S.NO</th>
+                                <th>Cake Image</th>
+                                <th>Cake Name</th>
+                                <th>Cake Size</th>
+                                <th>Cake Quantity</th>
+                                <th>Price</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr th:each="item, iterStat : ${orderDetails}">
+                                <td th:text="${iterStat.index + 1}"></td>
+                                <td><img th:src="@{'/uploads/' + ${item.cake.imageURL}}" alt="Cake Image" class="product-image" style="width: 50px"></td>
+                                <td th:text="${item.cake.name}"></td>
+                                <td th:text="${item.size}"></td>
+                                <td th:text="${item.quantity}"></td>
+                                <td th:text= "${item.formattedPrice} + ' đ'"></td>
+                            </tr>
+                            <tr>
+                                <td colspan="5" class="text-right"><b>Grand Total</b></td>
+                                <td th:text="'$' + ${order.formattedPrice} + ' đ'"></td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="row mt-3">
+        <div class="col-md-12">
+            <div class="p-3">
+                <form th:action="@{/admin/updateOrderStatus}" method="post">
+                    <input type="hidden" name="orderId" th:value="${order.id}" />
+
+                    <div class="form-group d-flex align-items-center">
+                        <label for="status" class="mr-2 font-weight-bold">Restaurant Status :</label>
+                        <select id="status" name="status" class="status-form"
+                                th:disabled="${order.status == T(com.example.cakeprj.Entity.OrderStatus).DA_HUY}">
+                            <option th:each="status : ${orderStatuses}"
+                                    th:if="${status != T(com.example.cakeprj.Entity.OrderStatus).DA_HUY}"
+                                    th:value="${status.name()}"
+                                    th:text="${status}"
+                                    th:selected="${order.status != null and order.status.equals(status)}">
+                            </option>
+                        </select>
+                    </div>
+
+
+                    <hr>
+
+                    <div class="text-center mt-2">
+                        <button type="submit" class="btn btn-success">Update order</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+
+</div>
+
+<!-- Core Scripts -->
+
+
+
+</body>
+</html>

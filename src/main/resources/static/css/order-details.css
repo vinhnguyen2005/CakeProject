@@ -255,6 +255,37 @@ tr:hover {
     color: #3d1a1a;
 }
 
+.cancel-order-container {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.btn-cancel {
+    display: flex;
+    justify-content: start;
+    background-color: #bf2534;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: background 0.3s ease;
+}
+
+.btn-cancel:hover {
+    background-color: #771620;
+}
+
+.btn-cancel:disabled {
+    background-color: #8b0000;
+    color: white;
+    cursor: not-allowed;
+    opacity: 1;
+}
+
+
 /* Footer */
 footer {
     background-color: #592A2A;
