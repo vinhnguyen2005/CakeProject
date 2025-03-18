@@ -9,16 +9,23 @@ document.addEventListener("DOMContentLoaded", function() {
         let priceElement = document.getElementById('displayprice');
         if (priceElement) {
             let priceText = priceElement.textContent.replace(/\./g, '').replace('đ', '').trim();
-            basePrice = parseFloat(priceText) || 0;
+            basePrice = Number(priceText);
 
             updateTotalPrice();
         }
     }
 });
 
-
 function updatePrice(button) {
-    basePrice = parseFloat(button.value.replace(/\./g, '').replace('đ', '')) || 0;
+    let rawPrice = button.value.replace(/\./g, "").replace("đ", "").trim();
+    basePrice = Number(rawPrice);
+
+    if (isNaN(basePrice) || basePrice <= 0) {
+        console.error("Invalid price detected:", rawPrice);
+        return;
+    }
+
+    console.log("Updated Base Price:", basePrice);
     let selectedSize = button.textContent.trim();
 
     document.getElementById('displayprice').innerHTML = formatPrice(basePrice * getQuantity()) + "đ";
@@ -32,14 +39,13 @@ function updatePrice(button) {
     document.getElementById("priceInput").value = basePrice * getQuantity();
     document.getElementById("priceInput2").value = basePrice * getQuantity();
 
-
     document.querySelectorAll('.size-option').forEach(btn => btn.classList.remove("active"));
     button.classList.add("active");
+
     updateTotalPrice();
 }
 
-
-function getQuantity(){
+function getQuantity() {
     return parseInt(document.getElementById('quantity').value) || 1;
 }
 
@@ -57,7 +63,7 @@ function updateTotalPrice() {
     document.getElementById("priceInput2").value = totalPrice;
 }
 
-document.querySelector(".increment").addEventListener("click", function(){
+document.querySelector(".increment").addEventListener("click", function() {
     let quantityInput = document.getElementById('quantity');
     let quantity = getQuantity() + 1;
 
@@ -68,7 +74,7 @@ document.querySelector(".increment").addEventListener("click", function(){
     updateTotalPrice();
 });
 
-document.querySelector(".decrement").addEventListener("click", function(){
+document.querySelector(".decrement").addEventListener("click", function() {
     let quantityInput = document.getElementById('quantity');
     let quantity = getQuantity();
 
@@ -82,5 +88,6 @@ document.querySelector(".decrement").addEventListener("click", function(){
 });
 
 function formatPrice(price) {
-    return price ? price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".") : "0";
+    if (price <= 0) return "0đ";
+    return price.toLocaleString("vi-VN").replace(/,/g, ".");
 }

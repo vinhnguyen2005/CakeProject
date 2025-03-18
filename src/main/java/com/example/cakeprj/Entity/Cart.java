@@ -106,6 +106,7 @@ public class Cart {
 
     public void setQuantity(int quantity) {
         this.quantity = quantity;
+        this.price = this.unitprice * quantity;
     }
 
     public double getPrice() {

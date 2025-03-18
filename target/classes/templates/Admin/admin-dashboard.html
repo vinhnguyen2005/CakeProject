@@ -31,57 +31,65 @@
         </div>
     </div>
     <div class="row">
-        <!-- Total Orders -->
         <div class="col-lg-3 col-md-6">
             <div class="panel">
-                <div class="panel-heading">Total Order</div>
-                <div class="huge">6</div>
-                <div>Total order</div>
+                <div class="panel-heading">Total Orders</div>
+                <div class="huge" th:text="${totalOrders}">0</div>
+                <div>Total Orders</div>
             </div>
         </div>
 
-        <!-- New Orders -->
         <div class="col-lg-3 col-md-6">
             <div class="panel">
                 <div class="panel-heading">New Orders</div>
-                <div class="huge">6</div>
+                <div class="huge" th:text="${noOfNewOrder}">0</div>
                 <div>New Orders</div>
             </div>
         </div>
 
-        <!-- Confirmed Orders -->
         <div class="col-lg-3 col-md-6">
             <div class="panel">
                 <div class="panel-heading">Confirmed Orders</div>
-                <div class="huge">0</div>
+                <div class="huge" th:text="${noOfConfirmedOrder}">0</div>
                 <div>Confirmed Orders</div>
             </div>
         </div>
 
-        <!-- Cancelled Orders -->
+        <!-- Delivering Orders -->
+        <div class="col-lg-3 col-md-6">
+            <div class="panel">
+                <div class="panel-heading">Delivering Orders</div>
+                <div class="huge" th:text="${noOfDeliveringOrder}"></div>
+                <div>New Orders</div>
+            </div>
+        </div>
+
+        <!-- Delivered Orders -->
+        <div class="col-lg-3 col-md-6">
+            <div class="panel">
+                <div class="panel-heading">Delivered Orders</div>
+                <div class="huge" th:text="${noOfDeliveredOrder}"></div>
+                <div>New Orders</div>
+            </div>
+        </div>
+
+
         <div class="col-lg-3 col-md-6">
             <div class="panel">
                 <div class="panel-heading">Cancelled Orders</div>
-                <div class="huge">0</div>
+                <div class="huge" th:text="${noOfCancelledOrder}">0</div>
                 <div>Cancelled Orders</div>
             </div>
         </div>
 
         <div class="col-lg-3 col-md-6">
             <div class="panel">
-                <div class="panel-heading">Total Regd. User</div>
-                <div class="huge">0</div>
-                <div>Register Users</div>
+                <div class="panel-heading">Registered Users</div>
+                <div class="huge" th:text="${noOfRegUser}">0</div>
+                <div>Registered Users</div>
             </div>
         </div>
 
-        <div class="col-lg-3 col-md-6">
-            <div class="panel">
-                <div class="panel-heading">Top Seller Cakes</div>
-                <div class="huge">0</div>
-                <div>Cakes</div>
-            </div>
-        </div>
     </div>
     <div class="row">
         <!-- Donut Chart Example-->
@@ -120,92 +128,85 @@
 <script th:src="@{/Admin/assets/plugins/morris/morris.js}"></script>
 <script th:src="@{/Admin/assets/scripts/dashboard-demo.js}"></script>
 
-<!-- Script for the Donut Chart -->
-<script>
-    // Updated data for cake categories and their income
-    const cakeIncomeData = [
-        { category: 'Bánh Sinh Nhật Bé Trai - Bé Gái', income: 1 },
-        { category: 'Bánh In Ảnh', income: 1 },
-        { category: 'Khác', income: 3 },
-        { category: 'Bánh Mặn', income: 2 },
-        { category: 'Bánh Phụ Kiện', income: 1 },
-        { category: 'Bánh Sự Kiện', income: 1 },
-        { category: 'Bánh Vẽ', income: 1 },
-        { category: 'Gateaux Kem Tươi', income: 1 },
-        { category: 'Mini Cake', income: 2 },
-        { category: 'Bánh Mousse', income: 1 },
-        { category: 'Bánh Valentine - Trái Tim', income: 1 }
-    ];
+<script th:inline="javascript">
+    document.addEventListener('DOMContentLoaded', function() {
+        // Income by Category Donut Chart
+        let incomeData = /*[[${incomeByCategory}]]*/ [];
+        let categories = incomeData.map(item => item.categoryName);
+        let incomes = incomeData.map(item => item.totalIncome);
 
-    // Extract categories and income values for Donut Chart
-    const labels = cakeIncomeData.map(data => data.category);
-    const incomeValues = cakeIncomeData.map(data => data.income);
-
-    // Create the donut chart
-    const donutCtx = document.getElementById('incomeDonutChart').getContext('2d');
-    new Chart(donutCtx, {
-        type: 'doughnut',
-        data: {
-            labels: labels, // Cake categories
-            datasets: [{
-                label: 'Income by Cake Category',
-                data: incomeValues, // Corresponding income for each category
-                backgroundColor: ['#FF6384', '#36A2EB', '#FFCD56', '#4BC0C0', '#FF9F40', '#FF2E00', '#8E44AD', '#3498DB', '#1ABC9C', '#F39C12', '#E74C3C'], // Customize colors for each section
-                hoverOffset: 4
-            }]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: {
-                legend: {
-                    position: 'top',
-                },
-                tooltip: {
-                    mode: 'index',
-                    intersect: false
-                }
+        new Chart(document.getElementById('incomeDonutChart'), {
+            type: 'doughnut',
+            data: {
+                labels: categories,
+                datasets: [{
+                    data: incomes,
+                    backgroundColor: [
+                        'rgba(255, 99, 132, 0.6)',
+                        'rgba(54, 162, 235, 0.6)',
+                        'rgba(255, 206, 86, 0.6)',
+                        'rgba(75, 192, 192, 0.6)',
+                        'rgba(153, 102, 255, 0.6)'
+                    ],
+                    borderColor: [
+                        'rgba(255, 99, 132, 1)',
+                        'rgba(54, 162, 235, 1)',
+                        'rgba(255, 206, 86, 1)',
+                        'rgba(75, 192, 192, 1)',
+                        'rgba(153, 102, 255, 1)'
+                    ],
+                    borderWidth: 1
+                }]
             },
-        }
-    });
-</script>
-
-<!-- Script for the Bar Chart (Monthly Order Count) -->
-<script>
-    // Sample data for monthly orders (you can replace this with actual data)
-    const monthlyOrderData = {
-        labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'], // Months
-        datasets: [{
-            label: 'Order Count',
-            data: [50, 70, 60, 90, 100, 110, 130], // Corresponding order counts for each month
-            backgroundColor: '#3498DB', // Blue color for bars
-            borderColor: '#2980B9',
-            borderWidth: 1
-        }]
-    };
-
-    // Create the bar chart
-    const barCtx = document.getElementById('ordersBarChart').getContext('2d');
-    new Chart(barCtx, {
-        type: 'bar',
-        data: monthlyOrderData,
-        options: {
-            responsive: true,
-            scales: {
-                y: {
-                    beginAtZero: true
-                }
-            },
-            plugins: {
-                legend: {
-                    position: 'top',
-                },
-                tooltip: {
-                    mode: 'index',
-                    intersect: false
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'top',
+                    },
+                    title: {
+                        display: true,
+                        text: 'Income by Cake Category'
+                    }
                 }
             }
-        }
+        });
+
+        // Orders per Month Bar Chart
+        let orderData = /*[[${orderCountPerMonth}]]*/ [];
+        let months = orderData.map(item => "Month " + item.month);
+        let orders = orderData.map(item => item.orderCount);
+
+        new Chart(document.getElementById('ordersBarChart'), {
+            type: 'bar',
+            data: {
+                labels: months,
+                datasets: [{
+                    label: 'Orders per Month',
+                    data: orders,
+                    backgroundColor: 'rgb(90,131,77)',
+                    borderColor: 'rgb(73,96,52)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                },
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'top',
+                    },
+                    title: {
+                        display: true,
+                        text: 'Orders Count per Month'
+                    }
+                }
+            }
+        });
     });
 </script>
 

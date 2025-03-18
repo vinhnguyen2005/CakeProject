@@ -60,13 +60,12 @@ public class CartService {
         cartRepository.deleteAll(carts);
     }
 
-    public void updateCartItemQuantity(UUID cartId, int quantity, double price) {
-        Cart item = cartRepository.findById(cartId)
-                .orElseThrow(() -> new RuntimeException("Item not found"));
-        item.setQuantity(quantity);
-        item.setPrice(price);
+    public Cart getCartItemById(UUID cartId) {
+        return cartRepository.findById(cartId).orElse(null);
+    }
 
-        cartRepository.save(item);
+    public void updateCart(Cart cart){
+        cartRepository.save(cart);
     }
 
 }

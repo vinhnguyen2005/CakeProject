@@ -84,17 +84,17 @@ public class CakeController {
     @GetMapping("/details/{id}")
     public String getDetailCake(@PathVariable String id, Model model) {
         Cake cake = cakeService.getCakeById(id);
-        cake.setFormattedPrice(PriceFormatter.formatPrice(cake.getPrice()));
+        cake.setFormattedPrice(PriceFormatter.formatPrice(cake.getPrice())); // No more multiplication
 
         Map<String, String> priceWithSize = new LinkedHashMap<>();
 
         if (cake.getHasSize()) {
             priceWithSize.put("16 cm", PriceFormatter.formatPrice(cake.getPrice()));
-            priceWithSize.put("18 cm", PriceFormatter.formatPrice(cake.getPrice() + 50));
-            priceWithSize.put("20 cm", PriceFormatter.formatPrice(cake.getPrice() + 100));
-            priceWithSize.put("22 cm", PriceFormatter.formatPrice(cake.getPrice() + 150));
-            priceWithSize.put("24 cm", PriceFormatter.formatPrice(cake.getPrice() + 250));
-            priceWithSize.put("26 cm", PriceFormatter.formatPrice(cake.getPrice() + 350));
+            priceWithSize.put("18 cm", PriceFormatter.formatPrice(cake.getPrice() + 50000));
+            priceWithSize.put("20 cm", PriceFormatter.formatPrice(cake.getPrice() + 100000));
+            priceWithSize.put("22 cm", PriceFormatter.formatPrice(cake.getPrice() + 150000));
+            priceWithSize.put("24 cm", PriceFormatter.formatPrice(cake.getPrice() + 250000));
+            priceWithSize.put("26 cm", PriceFormatter.formatPrice(cake.getPrice() + 350000));
         } else {
             priceWithSize.put("16 cm", PriceFormatter.formatPrice(cake.getPrice()));
         }

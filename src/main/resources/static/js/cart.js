@@ -10,24 +10,19 @@ function formatPrices() {
         let rawText = priceElement.textContent.trim();
         console.log("Raw Price Text:", rawText);
 
-        let cleanedText = rawText.replace(/[^\d]/g, "");
+        let cleanedText = rawText.replace("₫", "").trim();
         console.log("Cleaned Text:", cleanedText);
 
         let price = parseFloat(cleanedText);
+
         console.log("Parsed Price:", price);
-        if(price >= 100000){
-            price/=10;
-        } else{
-            price *= 100;
-        }
-
-
         let formattedPrice = formatPrice(price) + " đ";
         console.log("Formatted Price:", formattedPrice);
 
         priceElement.textContent = formattedPrice;
     });
 }
+
 
 
 
@@ -65,15 +60,17 @@ function setupQuantityControls() {
 
 function updateTotalPrice(quantity, priceElement, totalPriceElement) {
     let price = parseFloat(priceElement.textContent.replace(/\./g, "").replace("đ", "").trim());
-    let totalPrice = quantity * price;
 
+
+    let totalPrice = quantity * price;
     totalPriceElement.textContent = formatPrice(totalPrice) + " đ";
     updateGrandTotal();
 }
 
 function formatPrice(price) {
-    return price.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+    return Math.round(price).toLocaleString("vi-VN").replace(/,/g, ".");
 }
+
 
 function updateGrandTotal() {
     let total = 0;
@@ -92,7 +89,6 @@ function viewOrder(){
 function continueShopping(){
     window.location.href = "/daibacbakery/home";
 }
-
 
 
 

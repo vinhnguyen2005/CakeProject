@@ -4,12 +4,17 @@ import com.example.cakeprj.Entity.*;
 import com.example.cakeprj.Repository.OrderDetailsRepository;
 import com.example.cakeprj.Repository.OrderRepository;
 import com.example.cakeprj.Repository.UserRepository;
+import com.example.cakeprj.dto.request.CategoryIncomeDTO;
+import com.example.cakeprj.dto.request.MonthlyOrderDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 public class OrderService {
@@ -57,6 +62,35 @@ public class OrderService {
 
     public void updateOrder(Order order) {
         orderRepository.save(order);
+    }
+
+    public Long countOrderByOrderStatus(OrderStatus orderStatus) {
+        return orderRepository.countByStatus(orderStatus);
+    }
+
+    public Long countAllOrders(){
+        return orderRepository.count();
+    }
+
+    public long getNewOrdersCount() {
+        LocalDateTime startOfDay = LocalDateTime.now().with(LocalTime.MIN);
+        LocalDateTime endOfDay = LocalDateTime.now().with(LocalTime.MAX);
+        return orderRepository.countOrdersByDate(startOfDay, endOfDay);
+    }
+
+    public List<CategoryIncomeDTO> getCategoryIncome() {
+        return orderRepository.getIncomeByCategory();
+    }
+
+    public List<MonthlyOrderDTO> getOrderCountPerMonth() {
+        List<Object[]> results = orderRepository.getOrderCountPerMonth();
+        return results.stream()
+                .map(row -> new MonthlyOrderDTO(
+                        ((Number) row[0]).intValue(),
+                        ((Number) row[1]).intValue(),
+                        ((Number) row[2]).longValue()
+                ))
+                .collect(Collectors.toList());
     }
 
 }

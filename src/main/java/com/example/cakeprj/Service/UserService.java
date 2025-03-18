@@ -90,4 +90,12 @@ public class UserService {
     public List<Users> getAllUser(){
         return userRepository.findAll();
     }
+
+    public Long countRegisteredUser(){
+        return userRepository.count();
+    }
+
+    public Long countUsersWithUserRole() {
+        return userRepository.countUsersByRole("ROLE_USER");
+    }
 }

@@ -39,7 +39,7 @@ public class AdminPageController {
     private final OrderService orderService;
     private final OnlineUserService onlineUserService;
 
-    public AdminPageController(UserRepository userRepository, OnlineUserService onlineUserService,UserService userService, CategoryService categoryService, MainCategoryService mainCategoryService, CartService cartService, CakeService cakeService, CakeProductRepository cakeProductRepository, OrderService orderService) {
+    public AdminPageController(UserRepository userRepository, OnlineUserService onlineUserService, UserService userService, CategoryService categoryService, MainCategoryService mainCategoryService, CartService cartService, CakeService cakeService, CakeProductRepository cakeProductRepository, OrderService orderService) {
         this.userRepository = userRepository;
         this.userService = userService;
         this.categoryService = categoryService;
@@ -52,7 +52,18 @@ public class AdminPageController {
     }
 
     @GetMapping("/dashboard")
-    public String dashboard() {
+    public String dashboard(Model model) {
+        model.addAttribute("totalOrders", orderService.countAllOrders());
+        model.addAttribute("noOfNewOrder", orderService.getNewOrdersCount());
+        model.addAttribute("noOfConfirmedOrder", orderService.countOrderByOrderStatus(OrderStatus.XAC_NHAN));
+        model.addAttribute("noOfCancelledOrder", orderService.countOrderByOrderStatus(OrderStatus.DA_HUY));
+        model.addAttribute("noOfDeliveringOrder", orderService.countOrderByOrderStatus(OrderStatus.DANG_GIAO));
+        model.addAttribute("noOfDeliveredOrder", orderService.countOrderByOrderStatus(OrderStatus.DA_GIAO));
+        model.addAttribute("noOfRegUser", userService.countRegisteredUser());
+
+        model.addAttribute("incomeByCategory", orderService.getCategoryIncome());
+
+        model.addAttribute("orderCountPerMonth", orderService.getOrderCountPerMonth());
         return "Admin/admin-dashboard";
     }
 
@@ -356,7 +367,7 @@ public class AdminPageController {
             orders = orderService.getOrderByOrderStatus(status);
         }
         for (Order order : orders) {
-            order.setFormattedPrice(PriceFormatter.formatPrice(order.getTotalPrice() / 1000));
+            order.setFormattedPrice(PriceFormatter.formatPrice(order.getTotalPrice()));
         }
 
         List<OrderStatus> orderStatuses = orderService.getAllStatuses();
@@ -376,10 +387,10 @@ public class AdminPageController {
         Order foundOrder = orderService.getOrder(id);
         List<OrderDetails> orderDetails = orderService.getOrderDetails(id);
         List<OrderStatus> orderStatuses = orderService.getAllStatuses();
-        for(OrderDetails orderDetail : orderDetails) {
-            orderDetail.setFormattedPrice(PriceFormatter.formatPrice(orderDetail.getPrice() / 1000));
+        for (OrderDetails orderDetail : orderDetails) {
+            orderDetail.setFormattedPrice(PriceFormatter.formatPrice(orderDetail.getPrice()));
         }
-        foundOrder.setFormattedPrice(PriceFormatter.formatPrice(foundOrder.getTotalPrice() / 1000));
+        foundOrder.setFormattedPrice(PriceFormatter.formatPrice(foundOrder.getTotalPrice()));
         model.addAttribute("order", foundOrder);
         model.addAttribute("orderDetails", orderDetails);
         model.addAttribute("orderStatuses", orderStatuses);
@@ -405,6 +416,7 @@ public class AdminPageController {
             return "redirect:/admin/order/view/" + orderId;
         }
     }
+
 
 
 

@@ -1,4 +1,3 @@
-
 package com.example.cakeprj.Controller;
 
 import com.example.cakeprj.Entity.Order;
@@ -32,10 +31,10 @@ public class OrderController {
     public String viewOrderDetails(@PathVariable UUID id, Model model) {
         List<OrderDetails> orderDetailsList = orderService.getOrderDetails(id);
         for (OrderDetails orderDetails : orderDetailsList) {
-            orderDetails.setFormattedPrice(PriceFormatter.formatPrice((orderDetails.getPrice()) / 1000));
+            orderDetails.setFormattedPrice(PriceFormatter.formatPrice((orderDetails.getPrice())));
         }
         Order order = orderService.getOrder(id);
-        order.setFormattedPrice(PriceFormatter.formatPrice(order.getTotalPrice() / 1000));
+        order.setFormattedPrice(PriceFormatter.formatPrice(order.getTotalPrice()));
         model.addAttribute("order", order);
         model.addAttribute("orderDetails", orderDetailsList);
         return "view-order-details";

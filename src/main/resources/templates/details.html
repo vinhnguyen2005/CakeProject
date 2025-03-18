@@ -18,7 +18,7 @@
     <img th:src="@{/img/bgdetails.jpg}" alt="cake">
     <h2 th:text="${cakedetails.name}"></h2>
 </section>
-    
+
 <!-- Products Section -->
 <section class="products-section">
     <!-- Image Section -->
@@ -26,19 +26,15 @@
         <img th:src="@{'/uploads/' + ${cakedetails.imageURL}}" alt="Cake Image">
     </div>
 
-    <!-- Purchase Details Section -->
     <div class="purchase-side">
         <div class="purchase-side-details">
-            <!-- Product Title -->
             <div class="purchase-side-details-title">
                 <h2 th:text="${cakedetails.name}"></h2>
                 <p th:text="${cakedetails.id}"></p>
             </div>
-            <!-- Price -->
             <div class="price">
-                <p>Giá: <strong id="displayprice" th:text="${cakedetails.formattedPrice}  + 'đ'"></strong></p>
+                <p>Giá: <strong id="displayprice" th:text="${cakedetails.formattedPrice} + 'đ'"></strong></p>
             </div>
-            <!--Size-->
             <div class="size" th:if="${cakedetails.hasSize}">
                 <p>Kích Thước:</p>
                 <div class="size-options">
@@ -52,7 +48,6 @@
                 </div>
             </div>
 
-            <!-- Quantity -->
             <div class="quantity">
                 <p>Số lượng</p>
                 <div class="quantity-controls">
@@ -61,8 +56,6 @@
                     <button class="increment">+</button>
                 </div>
             </div>
-            <!-- Buttons -->
-
             <div class="buttons">
                 <form id="cartForm" th:action="@{/cart/process-cart}" method="post">
                     <input type="hidden" name="id" th:value="${cakedetails.id}">

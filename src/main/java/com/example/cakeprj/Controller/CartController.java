@@ -47,15 +47,25 @@ public class CartController {
             @RequestParam("itemIds") List<UUID> itemIds,
             @RequestParam("quantities") List<Integer> quantities,
             @RequestParam("totalOrderPrice") double totalOrderPrice) {
-        System.out.println("Received itemIds: " + itemIds);
-        System.out.println("Received quantities: " + quantities);
-        System.out.println("Received totalOrderPrice: " + totalOrderPrice);
 
         for (int i = 0; i < itemIds.size(); i++) {
-            cartService.updateCartItemQuantity(itemIds.get(i), quantities.get(i), totalOrderPrice);
+            UUID itemId = itemIds.get(i);
+            int quantity = quantities.get(i);
+
+            Cart cartItem = cartService.getCartItemById(itemId);
+
+            if (cartItem != null) {
+                cartItem.setQuantity(quantity);
+                double updatedPrice = cartItem.getUnitprice() * quantity;
+                cartItem.setPrice(updatedPrice);
+
+                cartService.updateCart(cartItem);
+            }
         }
+
         return "redirect:/cart";
     }
+
 
 
 
@@ -100,13 +110,13 @@ public class CartController {
         Users user = userService.findByUsername(userDetails.getUsername());
 
         List<Cart> cartItems = cartService.getCarts(user.getId());
+        double totalPrice = 0;
         for (Cart cartItem : cartItems) {
-            cartItem.setFormattedPrice(PriceFormatter.formatPrice(cartItem.getUnitprice() * cartItem.getQuantity() / 1000));
+            cartItem.setFormattedPrice(PriceFormatter.formatPrice(cartItem.getUnitprice() * cartItem.getQuantity()));
+            totalPrice += cartItem.getPrice();
         }
 
-        double totalPrice = cartItems.get(0).getPrice();
-
-        model.addAttribute("totalPrice", PriceFormatter.formatPrice(totalPrice / 1000));
+        model.addAttribute("totalPrice", PriceFormatter.formatPrice(totalPrice));
         model.addAttribute("cartItems", cartItems);
         model.addAttribute("user", user);
         model.addAttribute("successMessage", successMessage);
@@ -149,8 +159,12 @@ public class CartController {
             orderDetails.setOrder(order);
             orderDetails.setQuantity(quantities.get(i));
             orderDetails.setPrice(prices.get(i));
-            String size = sizes.get(i);
-            orderDetails.setSize(size != null ? size.trim() : "");
+            if (cakeFound.getHasSize()) {
+                String size = (i < sizes.size()) ? sizes.get(i) : "";
+                orderDetails.setSize(size != null ? size.trim() : "");
+            } else {
+                orderDetails.setSize("");
+            }
             orderDetailsList.add(orderDetails);
         }
         order.setOrderDetails(orderDetailsList);
