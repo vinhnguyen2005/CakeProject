@@ -15,19 +15,6 @@ public class CakeService {
     @Autowired
     private CakeProductRepository cakeRepository;
 
-    public List<Cake> getTopCakesByCategory(String categoryId, int limit, int offset, String sortOrder) {
-        List<Cake> cakes = cakeRepository.findTopCakesByCategory(categoryId, limit, offset);
-
-
-        if ("desc".equalsIgnoreCase(sortOrder)) {
-            cakes.sort(Comparator.comparing(Cake::getPrice).reversed());
-        } else {
-            cakes.sort(Comparator.comparing(Cake::getPrice));
-        }
-
-        return cakes;
-    }
-
 
     public Cake getCakeById(String id) {
         return cakeRepository.findCakeById(id);
@@ -52,5 +39,21 @@ public class CakeService {
 
     public List<Cake> findCakeFromSearch(String searchText) {
         return cakeRepository.findByNameContainingIgnoreCase(searchText);
+    }
+
+    public List<Cake> getTopSellingCakes(int limit){
+        return cakeRepository.findTopSellingCakes(limit);
+    }
+
+    public List<Cake> getCakesByCategory(String categoryID, int limit) {
+        return cakeRepository.getCakesByCategory(categoryID, limit);
+    }
+
+    public List<Cake> getLatestCake(int limit) {
+        return cakeRepository.findTopNewestCakes(limit);
+    }
+
+    public List<Cake> getRandomCakes() {
+        return cakeRepository.findRandomCakes();
     }
 }

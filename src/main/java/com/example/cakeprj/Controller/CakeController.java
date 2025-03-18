@@ -69,13 +69,24 @@ public class CakeController {
     @GetMapping("/home")
     public String getAllHomeCakes(Model model, @RequestParam(defaultValue = "asc") String sortOrder) {
         String defaultCategoryId = "GT";
+        int topSellingCakeLimit = 10;
+        List<Cake> topSellingCakes = cakeService.getTopSellingCakes(topSellingCakeLimit);
+        if(topSellingCakes.size() < topSellingCakeLimit) {
+            int remainingCakes = topSellingCakeLimit - topSellingCakes.size();
+            List<Cake> additionalCakes = cakeService.getCakesByCategory(defaultCategoryId, remainingCakes);
+            topSellingCakes.addAll(additionalCakes);
+        }
 
-        List<Cake> homepageCake = cakeService.getTopCakesByCategory(defaultCategoryId, 8, 0, sortOrder);
 
-        for (Cake cake : homepageCake) {
+        for (Cake cake : topSellingCakes) {
             cake.setFormattedPrice(PriceFormatter.formatPrice(cake.getPrice()));
         }
-        model.addAttribute("homepagecakes", homepageCake);
+        List<Cake> latestCake = cakeService.getLatestCake(topSellingCakeLimit);
+        for (Cake cake :  latestCake) {
+            cake.setFormattedPrice(PriceFormatter.formatPrice(cake.getPrice()));
+        }
+        model.addAttribute("latestCakes", latestCake);
+        model.addAttribute("homepagecakes", topSellingCakes);
         model.addAttribute("sortOrder", sortOrder);
 
         return "home";
@@ -84,7 +95,7 @@ public class CakeController {
     @GetMapping("/details/{id}")
     public String getDetailCake(@PathVariable String id, Model model) {
         Cake cake = cakeService.getCakeById(id);
-        cake.setFormattedPrice(PriceFormatter.formatPrice(cake.getPrice())); // No more multiplication
+        cake.setFormattedPrice(PriceFormatter.formatPrice(cake.getPrice()));
 
         Map<String, String> priceWithSize = new LinkedHashMap<>();
 
@@ -98,7 +109,11 @@ public class CakeController {
         } else {
             priceWithSize.put("16 cm", PriceFormatter.formatPrice(cake.getPrice()));
         }
-
+        List<Cake> randomCakes = cakeService.getRandomCakes();
+        for (Cake cakeItem : randomCakes) {
+            cakeItem.setFormattedPrice(PriceFormatter.formatPrice(cake.getPrice()));
+        }
+        model.addAttribute("randomCakes", randomCakes);
         model.addAttribute("cakedetails", cake);
         model.addAttribute("priceWithSize", priceWithSize);
         return "details";

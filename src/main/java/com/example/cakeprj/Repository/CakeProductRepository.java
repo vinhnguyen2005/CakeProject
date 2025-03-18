@@ -29,6 +29,31 @@ public interface CakeProductRepository extends JpaRepository<Cake, String> {
     List<Cake> findTopCakesByCategory(@Param("categoryID") String categoryID,
                                       @Param("size") int size,
                                       @Param("startIndex") int startIndex);
+
     List<Cake> findByNameContainingIgnoreCase(String name);
 
+    @Query(value = "SELECT c.* FROM cakeproduct c " +
+            "JOIN orderdetails od ON c.id = od.cake_id " +
+            "GROUP BY c.id " +
+            "ORDER BY SUM(od.quantity) DESC " +
+            "LIMIT :limit", nativeQuery = true)
+    List<Cake> findTopSellingCakes(@Param("limit") int limit);
+
+
+    @Query(value = "SELECT * FROM cakeproduct c " +
+            "JOIN cake_categories cc ON c.id = cc.cakeid " +
+            "WHERE cc.categoryid = :categoryID " +
+            "ORDER BY c.price ASC LIMIT :limit", nativeQuery = true)
+    List<Cake> getCakesByCategory(@Param("categoryID") String categoryID, @Param("limit") int limit);
+
+    @Query(value = "SELECT * FROM cakeproduct ORDER BY created_at DESC LIMIT :limit", nativeQuery = true)
+    List<Cake> findTopNewestCakes(@Param("limit") int limit);
+
+    @Query(value = "SELECT * FROM cakeproduct ORDER BY RAND() LIMIT 4", nativeQuery = true)
+    List<Cake> findRandomCakes();
+
+
 }
+
+
+

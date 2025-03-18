@@ -35,7 +35,28 @@
 </section>
 
 <div class="see-more-btn">
-    <button><a href="gateux.html">Xem Thêm</a></button>
+    <button><a th:href="@{/gateux/gt}">Xem Thêm</a></button>
+</div>
+
+<section class="products-section">
+    <h2>Bánh Mới Ra Lò</h2>
+    <div class="products-grid">
+        <div th:each="cake : ${latestCakes}" class="product-card">
+            <a th:href="@{'/details/' + ${cake.id}}" class="product-card-a">
+                <img th:src="@{'/uploads/' + ${cake.imageURL}}" alt="Cake Image">
+                <h3 th:text="${cake.name}"></h3>
+                <p th:text="${cake.id}"></p>
+                <div class="product-price-action">
+                    <div class="product-price" th:text="${cake.formattedPrice} + ' đ'"></div>
+                    <button class="add-to-cart-btn">🛒</button>
+                </div>
+            </a>
+        </div>
+    </div>
+</section>
+
+<div class="see-more-btn">
+    <button><a th:href="@{/gateux/gt}">Xem Thêm</a></button>
 </div>
 
 <div class="order-online">
