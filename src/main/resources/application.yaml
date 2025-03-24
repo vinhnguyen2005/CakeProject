@@ -33,3 +33,8 @@ spring:
           auth: true
           starttls:
             enable: true
+
+logging:
+  level:
+    org.thymeleaf: DEBUG
+    org.springframework.web: DEBUG

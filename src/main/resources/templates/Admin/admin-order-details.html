@@ -93,11 +93,14 @@
                             <tbody>
                             <tr th:each="item, iterStat : ${orderDetails}">
                                 <td th:text="${iterStat.index + 1}"></td>
-                                <td><img th:src="@{'/uploads/' + ${item.cake.imageURL}}" alt="Cake Image" class="product-image" style="width: 50px"></td>
-                                <td th:text="${item.cake.name}"></td>
+                                <td>
+                                    <img th:if="${item.cake != null}" th:src="@{'/uploads/' + ${item.cake.imageURL}}" alt="Cake Image" class="product-image" style="width: 50px">
+                                    <span th:if="${item.cake == null}" class="text-muted">[Image not available]</span>
+                                </td>
+                                <td th:text="${item.cake != null ? item.cake.name : '[Cake removed]'}"></td>
                                 <td th:text="${item.size}"></td>
                                 <td th:text="${item.quantity}"></td>
-                                <td th:text= "${item.formattedPrice} + ' đ'"></td>
+                                <td th:text="${item.formattedPrice} + ' đ'"></td>
                             </tr>
                             <tr>
                                 <td colspan="5" class="text-right"><b>Grand Total</b></td>
@@ -121,7 +124,7 @@
                     <div class="form-group d-flex align-items-center">
                         <label for="status" class="mr-2 font-weight-bold">Restaurant Status :</label>
                         <select id="status" name="status" class="status-form"
-                                th:disabled="${order.status != null and order.status.name() == 'DA_HUY'}">
+                                th:disabled="${order.status != null and order.status.name() == 'DA_HUY' || order.status.name() == 'DA_GIAO'}">
                             <option th:each="status : ${orderStatuses}"
                                     th:if="${status != T(com.example.cakeprj.Entity.OrderStatus).DA_HUY}"
                                     th:value="${status.name()}"
@@ -135,7 +138,11 @@
                     <hr>
 
                     <div class="text-center mt-2">
-                        <button type="submit" class="btn btn-success">Update order</button>
+                        <button type="submit" class="btn btn-success"
+                                th:disabled="${order.status != null and order.status.name() == 'DA_HUY'}">
+                            Update order
+                        </button>
+
                     </div>
                 </form>
             </div>

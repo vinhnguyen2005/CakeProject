@@ -15,7 +15,7 @@ public class OrderDetails {
     @JoinColumn(name = "order_id")
     private Order order;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "cake_id")
     private Cake cake;
 

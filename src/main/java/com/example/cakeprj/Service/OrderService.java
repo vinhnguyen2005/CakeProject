@@ -9,6 +9,7 @@ import com.example.cakeprj.dto.request.MonthlyOrderDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.management.Query;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Arrays;
@@ -69,13 +70,26 @@ public class OrderService {
     }
 
     public Long countAllOrders(){
-        return orderRepository.count();
+        return orderRepository.countOrdersWithoutAdmin();
     }
 
     public long getNewOrdersCount() {
         LocalDateTime startOfDay = LocalDateTime.now().with(LocalTime.MIN);
         LocalDateTime endOfDay = LocalDateTime.now().with(LocalTime.MAX);
         return orderRepository.countOrdersByDate(startOfDay, endOfDay);
+    }
+
+
+    public boolean isCakeInActiveOrders(String cakeId) {
+        List<OrderDetails> orderDetailsList = orderDetailsRepository.findByCakeId(cakeId);
+        for (OrderDetails orderDetails : orderDetailsList) {
+
+            if (!orderDetails.getOrder().getStatus().equals(OrderStatus.DA_HUY) &&
+                    !orderDetails.getOrder().getStatus().equals(OrderStatus.DA_GIAO)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public List<CategoryIncomeDTO> getCategoryIncome() {

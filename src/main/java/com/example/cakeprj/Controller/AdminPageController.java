@@ -113,13 +113,31 @@ public class AdminPageController {
     @GetMapping("/userlist")
     public String userlist(Model model) {
         List<Users> allUsers = userService.getAllUser();
+
         List<Users> usersOnly = allUsers.stream()
-                .filter(user -> user.getRoles().stream().noneMatch(role -> "ADMIN".equals(role.getName())))
+                .filter(user -> user.getRoles().stream()
+                        .map(Role::getName)
+                        .noneMatch(roleName -> roleName.trim().equalsIgnoreCase("ROLE_ADMIN")))
                 .toList();
 
         model.addAttribute("users", usersOnly);
         return "Admin/register-user";
     }
+
+
+    @GetMapping("/users/view/{id}")
+    public String viewUser(@PathVariable UUID id, Model model) {
+        Users user = userService.findUserById(id);
+        model.addAttribute("user", user);
+        List<Order> foundOrder = orderService.getOrders(id);
+        for (Order order : foundOrder) {
+            order.setFormattedPrice(PriceFormatter.formatPrice(order.getTotalPrice()));
+        }
+        model.addAttribute("orders", foundOrder);
+        model.addAttribute("orderCount", foundOrder.size());
+        return "Admin/view-user-details";
+    }
+
 
     @GetMapping("/category/maincategory")
     public String mainCategory(Model model) {
@@ -164,8 +182,12 @@ public class AdminPageController {
     public String deleteCategory(@PathVariable String id,
                                  @RequestParam("mainCategoryId") String mainCategoryId,
                                  RedirectAttributes redirectAttributes) {
-        categoryService.deleteSubcategory(id);
-        redirectAttributes.addFlashAttribute("successMessage", "Category deleted successfully!");
+        try {
+            categoryService.deleteSubcategory(id);
+            redirectAttributes.addFlashAttribute("successMessage", "Category deleted successfully!");
+        } catch (IllegalStateException e) {
+            redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
+        }
         return "redirect:/admin/category/subcategory-list?id=" + mainCategoryId;
     }
 
@@ -296,6 +318,11 @@ public class AdminPageController {
 
     @GetMapping("/cake/delete/{id}")
     public String deleteCake(@PathVariable String id, RedirectAttributes redirectAttributes) {
+        if (orderService.isCakeInActiveOrders(id)) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Cannot delete cake! It is already in an active order.");
+            return "redirect:/admin/cake/manage";
+        }
+
         cakeService.deleteById(id);
         redirectAttributes.addFlashAttribute("deleteSuccessful", "Cake deleted successfully!");
         return "redirect:/admin/cake/manage";
@@ -371,8 +398,6 @@ public class AdminPageController {
         }
 
         List<OrderStatus> orderStatuses = orderService.getAllStatuses();
-        System.out.println("Received status: " + status);
-        System.out.println("Order Status List: " + orderStatuses);
 
         model.addAttribute("orders", orders);
         model.addAttribute("orderStatuses", orderStatuses);
@@ -402,7 +427,7 @@ public class AdminPageController {
                                     @RequestParam("status") OrderStatus status,
                                     RedirectAttributes redirectAttributes) {
         try {
-            System.out.println("🟢 Status received: " + status.name());
+
 
             Order foundOrder = orderService.getOrder(orderId);
             if (foundOrder != null) {

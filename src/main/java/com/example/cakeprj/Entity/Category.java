@@ -16,7 +16,7 @@ public class Category {
     @JoinColumn(name = "main_category_id", nullable = false)
     private MainCategory mainCategory;
 
-    @ManyToMany(mappedBy = "categories")
+    @ManyToMany(mappedBy = "categories", cascade = CascadeType.ALL)
     private Set<Cake> cakes;
 
     public Category() {}

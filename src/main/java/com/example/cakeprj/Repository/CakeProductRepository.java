@@ -2,6 +2,7 @@ package com.example.cakeprj.Repository;
 
 import com.example.cakeprj.Entity.Cake;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -51,6 +52,10 @@ public interface CakeProductRepository extends JpaRepository<Cake, String> {
 
     @Query(value = "SELECT * FROM cakeproduct ORDER BY RAND() LIMIT 4", nativeQuery = true)
     List<Cake> findRandomCakes();
+
+    @Modifying
+    @Query(value = "DELETE FROM cakeproduct WHERE id = :cakeId", nativeQuery = true)
+    void deleteCakeDirectly(@Param("cakeId") String cakeId);
 
 
 }

@@ -71,6 +71,9 @@
                 <div th:if="${successMessage}" class="alert alert-success">
                     <p th:text="${successMessage}"></p>
                 </div>
+                <div th:if="${errorMessage}" class="alert alert-danger">
+                    <p th:text="${errorMessage}"></p>
+                </div>
 
                 <a th:href="@{/admin/category/maincategory}" class="btn btn-secondary btn-sm">Back</a>
             </div>

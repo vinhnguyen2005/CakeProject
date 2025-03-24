@@ -92,10 +92,14 @@ public class UserService {
     }
 
     public Long countRegisteredUser(){
-        return userRepository.count();
+        return userRepository.countUsersWithoutAdmin();
     }
 
     public Long countUsersWithUserRole() {
         return userRepository.countUsersByRole("ROLE_USER");
+    }
+
+    public Users findUserById(UUID userId) {
+        return userRepository.findById(userId).orElseThrow(() -> new UsernameNotFoundException("User not found with ID: " + userId));
     }
 }

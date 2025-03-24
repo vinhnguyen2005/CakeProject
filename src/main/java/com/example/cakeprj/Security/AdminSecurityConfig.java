@@ -35,7 +35,7 @@ public class AdminSecurityConfig {
                 .securityMatcher("/admin/**")
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/admin/login", "/Admin/assets/**").permitAll()
-                        .requestMatchers("/admin/**").hasRole("ADMIN")
+                        .requestMatchers("/admin/**").hasAuthority("ROLE_ADMIN")
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form
@@ -50,12 +50,14 @@ public class AdminSecurityConfig {
                         .logoutSuccessUrl("/admin/login?logout=true")
                         .invalidateHttpSession(true)
                         .deleteCookies("JSESSIONID", "remember-me")
+                        .permitAll()
                 )
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
                         .maximumSessions(1)
                         .expiredUrl("/admin/login?expired=true")
-                );
+                )
+                .csrf(csrf -> csrf.disable());
 
         return http.build();
     }

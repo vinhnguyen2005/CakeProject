@@ -17,4 +17,8 @@ public interface UserRepository extends JpaRepository<Users, UUID> {
     Optional<Users> findByResetToken(String resetToken);
     @Query("SELECT COUNT(u) FROM Users u JOIN u.roles r WHERE r.name = :roleName")
     Long countUsersByRole(@Param("roleName") String roleName);
+    @Query("SELECT COUNT(u) FROM Users u WHERE NOT EXISTS " +
+            "(SELECT 1 FROM u.roles r WHERE r.name = 'ROLE_ADMIN')")
+    Long countUsersWithoutAdmin();
+
 }

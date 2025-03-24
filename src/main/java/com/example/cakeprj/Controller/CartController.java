@@ -110,6 +110,9 @@ public class CartController {
         Users user = userService.findByUsername(userDetails.getUsername());
 
         List<Cart> cartItems = cartService.getCarts(user.getId());
+        if(cartItems.isEmpty()){
+            return "redirect:/cart";
+        }
         double totalPrice = 0;
         for (Cart cartItem : cartItems) {
             cartItem.setFormattedPrice(PriceFormatter.formatPrice(cartItem.getUnitprice() * cartItem.getQuantity()));
@@ -138,6 +141,7 @@ public class CartController {
         }
 
         Users user = userService.findByUsername(userDetails.getUsername());
+        List<Cart> cartItems = cartService.getCarts(user.getId());
 
         order.setUser(user);
         System.out.println("Debug: Danh sách giá từng bánh: " + prices);

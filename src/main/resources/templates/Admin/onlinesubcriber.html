@@ -54,7 +54,9 @@
                             <td th:text="${user.phone}"></td>
                             <td th:text="${user.orderContent}"></td>
                             <td th:text="${user.email}"></td>
-                            <td><a th:href="@{/online-user/call/{id}(id=${user.id})}">Call</a></td>
+                            <td><a th:href="'tel:' + ${user.phone}">Call</a></td>
+
+
                         </tr>
                         </tbody>
                     </table>

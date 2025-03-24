@@ -32,11 +32,6 @@ public class AuthController {
         SecurityContextLogoutHandler logoutHandler = new SecurityContextLogoutHandler();
         logoutHandler.logout(request, response, null);
 
-        // Manually delete the remember-me cookie
-        Cookie cookie = new Cookie("remember-me", null);
-        cookie.setMaxAge(0);
-        cookie.setPath("/");
-        response.addCookie(cookie);
 
         return "redirect:/login?logout=true";
     }
